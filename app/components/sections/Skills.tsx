@@ -68,13 +68,10 @@ export const Skills = () => {
                         return (
                             <Card
                                 key={skillCategory.category}
-                                glass="medium"
-                                hover
                                 className="
                                     p-0 overflow-hidden
                                     group
-                                    shadow-[0_8px_32px_rgba(0,0,0,0.3)]
-                                    hover:shadow-[0_8px_32px_rgba(220,38,38,0.3)]
+                                    shadow-[0_8px_32px_rgba(0,0,0,0.3)]                                   
                                     border border-white/10
                                     hover:border-red-500/30
                                     transition-all duration-500 ">

@@ -1,86 +1,64 @@
 'use client';
-
-import React from 'react';
-import { Mail, Phone, MapPin } from 'lucide-react';
-import Image from 'next/image';
 import { Card } from '../ui/Card';
+import { Code, Cpu, Globe } from 'lucide-react';
 
 export const About = () => {
     return (
-        <section id="about" className="min-h-screen flex items-center px-4 md:px-8  overflow-hidden">
-            <div className="max-w-7xl w-full mx-auto">
-                <h2 className="text-4xl font-bold text-white mb-12">
-                    Sobre Mí
-                </h2>
-
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <Card glass="medium" className="lg:col-span-2 p-8 group">
-                        <div className="flex flex-col md:flex-row gap-8  items-center justify-center">
-
-                            <div className="flex-shrink-0 mx-auto md:mx-0">
-                                <div className="relative w-48 sm:w-56 aspect-[828/992] rounded-2xl overflow-hidden border border-white/10 shadow-2xl group-hover:shadow-[0_0_30px_rgba(220,38,38,0.3)] transition-all duration-500">
-                                    <img
-                                        src="/profileccc.jpeg"
-                                        alt="Cutberto Colohua"
-                                        className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-black/40 via-transparent to-white/10 opacity-60"></div>
-                                </div>
-                            </div>
-
-                            <div className="flex-1 text-center md:text-left">
-                                <h3 className="text-3xl font-bold text-white mb-2">
-                                    Cutberto Colohua Castillo
+        <section id="about" className="min-h-[90vh] flex items-center justify-center px-4 relative">
+            
+            <div className="max-w-7xl w-full mx-auto animate-slideUp">
+                <Card glass="pure" className="min-h-[auto] md:h-[550px] p-0 border border-white/10">
+                    
+                    <div className="flex flex-col md:flex-row w-full h-full">
+                        <div className="w-full md:w-2/5 h-72 md:h-full relative flex-shrink-0 group overflow-hidden">
+                            <div className="absolute inset-0 bg-slate-900/10 z-10" />
+                            <img
+                                src="/profileccc.jpeg"
+                                alt="Cutberto Colohua"
+                                className="w-full h-full object-cover object-center "
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60" />
+                        </div>
+                        <div className="w-full md:w-3/5 p-6 md:p-10 flex flex-col justify-center relative bg-slate-900/10 md:bg-transparent">
+                            
+                            <div className="mb-6 border-b border-white/10 pb-4">
+                                <h2 className="font-outfit text-3xl md:text-4xl font-bold text-white mb-1">
+                                    Sobre Mí
+                                </h2>
+                                <h3 className="font-outfit text-xl text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-300 font-medium">
+                                    Cutberto Colohua
                                 </h3>
-                                <div className="inline-block px-3 py-1 rounded-full bg-red-900/20 border border-red-500/20 mb-6">
-                                    <p className="text-lg text-red-400 font-medium">
-                                        Ingeniero en Informática
-                                    </p>
-                                </div>
+                            </div>
 
-                                <p className="text-gray-300 leading-relaxed text-base md:text-lg">
-                                    Desarrollador Fullstack con experiencia en la creación de aplicaciones web y móviles, utilizando principalmente <span className="text-white font-medium">React</span>,
-                                    <span className="text-white font-medium"> React Native</span> y <span className="text-white font-medium">TypeScript</span>.
-                                    Experto en entornos backend con Node.js y Prisma.
+                            <div className="space-y-4 font-inter text-slate-300 text-sm md:text-base leading-relaxed">
+                                <p>
+                                    Soy un <strong className="text-white">Ingeniero en Informática</strong> enfocado en construir herramientas digitales que marquen la diferencia. Mi especialidad es el desarrollo Full Stack, donde fusiono la lógica del backend con interfaces fluidas.
                                 </p>
-                                <p className="text-gray-300 leading-relaxed mt-4 text-base md:text-lg">
-                                    Me enfoco en soluciones escalables, optimización de procesos y colaboración efectiva con equipos multidisciplinarios.
+                                <p>
+                                    Más allá del código, me motiva la resolución creativa de problemas. No se trata solo de programar, sino de <strong className="text-red-400">entender las necesidades</strong> reales y traducirlas en software eficiente y escalable.
+                                </p>
+                                <p className="hidden md:block">
+                                    Siempre estoy explorando nuevas tecnologías para mantener mis habilidades afiladas y entregar resultados modernos y de alta calidad.
                                 </p>
                             </div>
-                        </div>
-                    </Card>
 
-                    <Card glass="medium" className="p-8 flex flex-col h-full">
-                        <h4 className="text-xl font-semibold text-white mb-6 border-b border-white/10 pb-2">
-                            Contacto
-                        </h4>
-
-                        <div className="flex flex-col md:flex-row flex-1 min-h-[150px]">
-                            <div className="flex-1 space-y-4">
-                                <a href="mailto:cutbertocolohua@gmail.com" className="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all border border-transparent hover:border-white/5 group">
-                                    <div className="p-2 bg-red-600/10 rounded-lg group-hover:bg-red-600/20 transition-colors">
-                                        <Mail size={20} className="text-red-400" />
-                                    </div>
-                                    <span className="text-sm truncate font-medium">cutbertocolohua@gmail.com</span>
-                                </a>
-
-                                <a href="tel:2722815138" className="flex items-center gap-4 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all border border-transparent hover:border-white/5 group">
-                                    <div className="p-2 bg-red-600/10 rounded-lg group-hover:bg-red-600/20 transition-colors">
-                                        <Phone size={20} className="text-red-400" />
-                                    </div>
-                                    <span className="text-sm font-medium">272 2815138</span>
-                                </a>
-
-                                <div className="flex items-center gap-4 text-gray-300  rounded-xl border border-transparent group">
-                                    <div className="p-2 bg-red-600/10 rounded-lg">
-                                        <MapPin size={20} className="text-red-400" />
-                                    </div>
-                                    <span className="text-sm font-medium">Veracruz, México</span>
+                            <div className="mt-8 pt-6 border-t border-white/5 flex gap-4 md:gap-8 overflow-x-auto">
+                                <div className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors cursor-default">
+                                    <Code size={18} className="text-red-500"/>
+                                    <span className="text-xs font-medium uppercase tracking-wider whitespace-nowrap">Web Dev</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors cursor-default">
+                                    <Cpu size={18} className="text-red-500"/>
+                                    <span className="text-xs font-medium uppercase tracking-wider whitespace-nowrap">Lógica</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors cursor-default">
+                                    <Globe size={18} className="text-red-500"/>
+                                    <span className="text-xs font-medium uppercase tracking-wider whitespace-nowrap">Soluciones</span>
                                 </div>
                             </div>
                         </div>
-                    </Card>
-                </div>
+                    </div>
+                </Card>
             </div>
         </section>
     );

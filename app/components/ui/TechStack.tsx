@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { cn } from "@/app/lib/utils/cn";
 import { iconColumns, TechIcon } from "./Icon";
 
@@ -34,11 +34,9 @@ const IconCard = React.forwardRef<HTMLDivElement, IconCardProps>(
 );
 IconCard.displayName = "IconCard";
 
-
 const TechStackVertical: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
-
 
     const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
     const [isHovering, setIsHovering] = useState(false);
@@ -103,7 +101,8 @@ const TechStackVertical: React.FC = () => {
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
-            className="relative flex items-center justify-center gap-4 overflow-visible rounded-3xl bg-black py-12 px-14 select-none">
+            className="relative flex flex-col lg:flex-row items-center justify-center gap-4 overflow-visible rounded-3xl bg-black  px-8 lg:px-14 select-none"
+        >
             <div className="pointer-events-none absolute -inset-px z-0 rounded-3xl transition-opacity duration-300"
                 style={{
                     opacity: isHovering ? 1 : 0,
@@ -115,8 +114,8 @@ const TechStackVertical: React.FC = () => {
                 <div
                     key={`col-${colIndex}`}
                     className={cn(
-                        "flex flex-col gap-4 relative z-10",
-                        colIndex === 1 && "-mt-10"
+                        "flex flex-row lg:flex-col gap-4 relative z-10",
+                        colIndex === 1 && "-ml-10 lg:ml-0 lg:-mt-10"
                     )}
                 >
                     {col.map((icon, iconIndex) => {

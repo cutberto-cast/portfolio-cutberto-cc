@@ -41,6 +41,12 @@ const config: Config = {
           dark: 'rgba(255, 255, 255, 0.05)',
         }
       },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-space-grotesk)', 'system-ui', 'sans-serif'],
+        outfit: ['var(--font-outfit)', 'system-ui', 'sans-serif'],
+        body: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+      },
       animation: {
         'float': 'float 6s ease-in-out infinite',
         'glow-red': 'glowRed 2s ease-in-out infinite alternate',
@@ -58,6 +64,7 @@ const config: Config = {
         'speed-line-1': 'speed-line-1 3s linear infinite',
         'speed-line-2': 'speed-line-2 3.5s linear 0.3s infinite',
         'wind-effect': 'wind-effect 2.5s ease-in-out infinite',
+        'border-travel': 'border-travel 8s linear infinite',
       },
       keyframes: {
         float: {
@@ -129,6 +136,10 @@ const config: Config = {
         'wind-effect': {
           '0%, 100%': { transform: 'skewX(0deg)' },
           '50%': { transform: 'skewX(1.5deg)' },
+        },
+        'border-travel': {
+          '0%': { strokeDashoffset: '100' },
+          '100%': { strokeDashoffset: '0' },
         },
       },
       backdropBlur: {

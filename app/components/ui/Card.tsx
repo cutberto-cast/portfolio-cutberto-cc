@@ -4,45 +4,35 @@ import React from 'react';
 interface CardProps {
     children: React.ReactNode;
     className?: string;
-    padding?: 'none' | 'sm' | 'md' | 'lg';
-    hover?: boolean;
-    glass?: 'light' | 'medium' | 'strong';
+    glass?: 'transparent' | 'frosted' | 'pure';
 }
 
 export const Card: React.FC<CardProps> = ({
     children,
     className,
-    padding = 'md',
-    hover = false,
-    glass = 'medium',
+    glass = 'frosted',
 }) => {
-    const paddings = {
-        none: '',
-        sm: 'p-4',
-        md: 'p-6',
-        lg: 'p-8',
-    };
-
+    
     const glassStyles = {
-        light: 'bg-slate-800/30 backdrop-blur-xl border-white/5',
-        medium: 'bg-slate-800/40 backdrop-blur-xl border-white/10',
-        strong: 'bg-slate-800/60 backdrop-blur-2xl border-white/20',
+        transparent: 'bg-transparent border-white/5 backdrop-blur-sm',
+        frosted: 'bg-slate-900/20 backdrop-blur-md border-white/10 shadow-lg',
+        pure: 'bg-white/5 backdrop-blur-xl border-white/20 shadow-xl',
     };
 
     return (
         <div
             className={cn(
-                'rounded-2xl border shadow-dark-glass relative',
-                'transition-all duration-300',
+                'rounded-3xl border relative overflow-hidden transition-all duration-500',
                 glassStyles[glass],
-                hover && 'hover:shadow-glass-lg hover:scale-[1.02] hover:bg-slate-800/50 cursor-pointer',
-                paddings[padding],
+                'hover:border-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]',
                 className
             )}
         >
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/5 to-transparent pointer-events-none"></div>
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-repeat"></div>
+            
+            <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-white/10 to-transparent blur-3xl pointer-events-none" />
 
-            <div className="relative z-10">
+            <div className="relative z-10 w-full h-full">
                 {children}
             </div>
         </div>

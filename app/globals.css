@@ -17,9 +17,11 @@
                 #1a0505 25%,
                 #450a0a 45%,
                 #411010 60%,
-                #000000 90%);
-        background-size: 300% 300%;
-        animation: gradient-shift 5s ease infinite;
+                #000000 90%,
+                #000000 100%
+                );
+        background-size: 370% 370%;
+        animation: gradient-shift 12s ease infinite;
     }
 
     .liquid-border {
@@ -450,4 +452,34 @@
 
 .animate-particle-2 {
     animation: particle-2 5s ease-out 0.5s infinite;
+}
+
+.container-hero{
+    display: flex;
+}
+
+.contenedorModelo{
+    position: absolute;
+}
+.modelo{
+    position: relative;
+    right: -500px;
+}
+
+@media (min-width: 1024px) and (max-width: 1300px){
+    .modelo{
+    right: -375px;
+}
+} 
+
+@media (max-width: 1023px) {
+    .contenedorModelo{
+        position: relative;
+        order: 2;
+    }
+
+    .modelo{
+        width: 1000px !important;
+        right: -40px;
+    }
 }

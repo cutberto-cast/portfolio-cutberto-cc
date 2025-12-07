@@ -9,7 +9,7 @@ export const Experience = () => {
     const experiences = [
         { position: 'Desarrollador Frontend / Fullstack', company: 'Sorum Asesores', period: 'Ene 2025 - Actualidad' },
         { position: 'Analista de Datos', company: 'Bioretail', period: '2024' },
-        { position: 'Desarrollador Frontend', company: 'Macand', period: '2023 - 2025'}
+        { position: 'Desarrollador Frontend', company: 'Macand', period: '2023 - 2025' }
     ];
 
     const highlights = [
@@ -21,10 +21,9 @@ export const Experience = () => {
     ];
 
     return (
-        <section id="experience" className="min-h-screen px-4 md:px-8 py-20 flex items-center justify-center overflow-hidden">
+        <section id="experience" className="min-h-[80vh] px-4 md:px-8 flex items-center justify-center overflow-hidden">
             <div className="max-w-7xl w-full mx-auto">
                 <Card
-                    glass="medium"
                     className="p-0 overflow-hidden border-white/5"
                 >
                     <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-0">
@@ -65,7 +64,7 @@ export const Experience = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
                                     ))}
                                 </div>
@@ -83,9 +82,10 @@ export const Experience = () => {
                             </div>
                         </div>
 
-                        <div className="relative border-l border-white/5 flex items-center justify-center overflow-hidden bg-[#020202]">
+                        <div className="relative border-t lg:border-t-0 lg:border-l border-white/5 flex items-center justify-center overflow-hidden bg-[#020202] py-10 lg:py-0">
                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000_100%)] pointer-events-none" />
-                            <div className="scale-90 lg:scale-100 origin-center z-10">
+
+                            <div className="scale-[0.65] sm:scale-75 md:scale-90 lg:scale-100 origin-center z-10">
                                 <TechStackVertical />
                             </div>
                         </div>
