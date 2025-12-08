@@ -33,7 +33,7 @@ export const Contact = () => {
             const data = await response.json();
 
             if (response.ok) {
-                toast.success('¡Mensaje enviado! Te contactaré pronto 🚀', {
+                toast.success('¡Mensaje enviado!', {
                     duration: 4000,
                     position: 'top-center',
                     style: {
