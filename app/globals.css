@@ -19,8 +19,6 @@
                 #411010 60%,
                 #000000 90%,
                 #000000 100%);
-        background-size: 370% 370%;
-        animation: gradient-shift 12s ease infinite;
     }
 
     .liquid-border {
@@ -329,12 +327,12 @@
 
 @keyframes shadow-grow {
     0% {
-        width: 20px;
+        transform: translateX(-50%) scaleX(0.08);
         opacity: 0;
     }
 
     100% {
-        width: 256px;
+        transform: translateX(-50%) scaleX(1);
         opacity: 0.3;
     }
 }

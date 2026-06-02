@@ -37,6 +37,7 @@ IconCard.displayName = "IconCard";
 const TechStackVertical: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const rafRef = useRef<number | null>(null);
 
     const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
     const [isHovering, setIsHovering] = useState(false);
@@ -48,7 +49,12 @@ const TechStackVertical: React.FC = () => {
         const rect = containerRef.current.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        setMousePos({ x, y });
+
+        if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+        rafRef.current = requestAnimationFrame(() => {
+            setMousePos({ x, y });
+            rafRef.current = null;
+        });
     }, []);
 
     const getIconStyle = (index: number) => {

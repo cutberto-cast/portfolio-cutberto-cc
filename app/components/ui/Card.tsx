@@ -9,6 +9,7 @@ interface CardProps {
 
 export const Card: React.FC<CardProps> = ({
     children,
+    
     className,
     glass = 'frosted',
 }) => {
@@ -28,10 +29,6 @@ export const Card: React.FC<CardProps> = ({
                 className
             )}
         >
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-repeat"></div>
-            
-            <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-br from-white/10 to-transparent blur-3xl pointer-events-none" />
-
             <div className="relative z-10 w-full h-full">
                 {children}
             </div>

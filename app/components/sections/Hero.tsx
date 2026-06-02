@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import Image from 'next/image';
 import { Download, Github, Linkedin, Mail, Phone } from 'lucide-react';
 
 export const Hero = () => {
@@ -32,10 +33,14 @@ export const Hero = () => {
         >
             <div className="w-full max-w-5xl mx-auto flex flex-col items-center relative">
                 <div className="w-full flex justify-center bg-black overflow-hidden">
-                    <img
+                    <Image
                         src="/herotres.png"
                         alt="Cutberto Colohua"
+                        width={1200}
+                        height={800}
+                        priority
                         className="w-full h-auto object-contain opacity-90"
+                        style={{ width: '100%', height: 'auto' }}
                     />
                 </div>
 

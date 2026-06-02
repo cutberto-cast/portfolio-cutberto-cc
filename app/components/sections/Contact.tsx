@@ -159,7 +159,7 @@ export const Contact = () => {
 
                             <div className="relative w-full h-full flex items-center justify-center">
                                 <div className="relative w-80 h-80 md:w-96 md:h-96 lg:w-[450px] lg:h-[450px] group-hover:scale-105 transition-transform duration-700">
-                                    <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-64 h-12 bg-black/30 blur-2xl rounded-full animate-shadow-grow"></div>
+                                    <div className="absolute -bottom-4 left-1/2 w-64 h-12 bg-black/30 blur-2xl rounded-full animate-shadow-grow"></div>
 
                                     <div className="relative w-full h-full">
                                         <div className="absolute inset-0 wind-effect">
