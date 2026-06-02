@@ -1,9 +1,47 @@
 'use client';
+import { useEffect, useRef, useState } from 'react';
 import { Card } from '../ui/Card';
 import { Code, Cpu, Globe } from 'lucide-react';
 import { motion, Variants } from 'framer-motion';
 
+function useCountUp(target: number, duration = 1500, start = false) {
+    const [count, setCount] = useState(0);
+    useEffect(() => {
+        if (!start) return;
+        let startTime: number | null = null;
+        const step = (timestamp: number) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            setCount(Math.floor(progress * target));
+            if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    }, [target, duration, start]);
+    return count;
+}
+
 export const About = () => {
+    const [metricsVisible, setMetricsVisible] = useState(false);
+    const metricsRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => { if (entry.isIntersecting) setMetricsVisible(true); },
+            { threshold: 0.5 }
+        );
+        if (metricsRef.current) observer.observe(metricsRef.current);
+        return () => observer.disconnect();
+    }, []);
+
+    const saasCount = useCountUp(6, 1200, metricsVisible);
+    const yearsCount = useCountUp(3, 1000, metricsVisible);
+    const clientsCount = useCountUp(10, 1400, metricsVisible);
+
+    const metrics = [
+        { value: saasCount, suffix: '+', label: 'Productos SaaS' },
+        { value: yearsCount, suffix: '+', label: 'Años de Experiencia' },
+        { value: clientsCount, suffix: '+', label: 'Clientes' },
+    ];
 
     const cardVariants: Variants = {
         hidden: { 
@@ -84,26 +122,38 @@ export const About = () => {
 
                             <motion.div className="space-y-4 font-inter text-slate-300 text-sm lg:text-base leading-relaxed" variants={textVariants}>
                                 <p>
-                                    Soy un <strong className="text-white">Ingeniero en Informática</strong> enfocado en construir herramientas digitales que marquen la diferencia. Mi especialidad es el desarrollo Full Stack, donde fusiono la lógica del backend con interfaces fluidas.
+                                    Soy <strong className="text-white">Ingeniero en Informática</strong> especializado en desarrollo Full Stack, con experiencia construyendo productos SaaS en producción para sectores como gastronomía, belleza, salud y distribución.
                                 </p>
                                 <p>
-                                    Más allá del código, me motiva la resolución creativa de problemas. No se trata solo de programar, sino de <strong className="text-red-400">entender las necesidades</strong> reales y traducirlas en software eficiente y escalable.
-                                </p>
-                                <p className="hidden lg:block">
-                                    Siempre estoy explorando nuevas tecnologías para mantener mis habilidades afiladas y entregar resultados modernos y de alta calidad.
+                                    Mi stack principal es <strong className="text-white">Next.js + Supabase + Prisma</strong>. Me enfoco en <strong className="text-red-400">entender el problema real</strong> antes de escribir código — traduciendo requerimientos de negocio en sistemas eficientes, escalables y fáciles de mantener.
                                 </p>
                             </motion.div>
 
-                            <motion.div 
-                                className="mt-8 pt-6 border-t border-white/5 flex gap-4 lg:gap-8 overflow-x-auto"
+                            <motion.div
+                                ref={metricsRef}
+                                className="mt-6 pt-5 border-t border-white/5 grid grid-cols-3 gap-4"
+                                variants={textVariants}
+                            >
+                                {metrics.map((m, i) => (
+                                    <div key={i} className="text-center">
+                                        <p className="text-2xl lg:text-3xl font-bold text-white">
+                                            {m.value}<span className="text-red-400">{m.suffix}</span>
+                                        </p>
+                                        <p className="text-xs text-slate-400 mt-1 leading-tight">{m.label}</p>
+                                    </div>
+                                ))}
+                            </motion.div>
+
+                            <motion.div
+                                className="mt-6 pt-4 border-t border-white/5 flex gap-4 lg:gap-8 overflow-x-auto"
                                 variants={textVariants}
                             >
                                 {[
-                                    { Icon: Code, text: "Web Dev" },
-                                    { Icon: Cpu, text: "Lógica" },
-                                    { Icon: Globe, text: "Soluciones" }
+                                    { Icon: Code, text: "SaaS Dev" },
+                                    { Icon: Cpu, text: "Arquitectura" },
+                                    { Icon: Globe, text: "Productos" }
                                 ].map((item, index) => (
-                                    <motion.div 
+                                    <motion.div
                                         key={index}
                                         className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors cursor-default"
                                         whileHover={{ y: -2, color: "#fff" }}

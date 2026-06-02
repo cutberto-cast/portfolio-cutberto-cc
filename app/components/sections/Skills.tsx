@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Code, Database, Cloud, Wrench, Palette, Brain, Layers } from 'lucide-react';
+import { Code, Database, Cloud, Wrench, Palette, Brain, Layers, Rocket } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { SKILLS_DATA } from '@/app/lib/constants';
 
@@ -17,15 +17,15 @@ const techIcons: Record<string, string> = {
     'Remix': '/icons/remix.svg',
     'Tailwind CSS': '/icons/tailwind.svg',
     'Node.js': '/icons/nodejs.svg',
-    //'REST APIs': '/icons/rest.svg',
     'GraphQL': '/icons/graphql.png',
     'JWT': '/icons/jwt.svg',
     'Prisma': '/icons/prisma.svg',
+    'Supabase': '/icons/supabase.svg',
+    'Vercel': '/icons/vercel.svg',
+    'Stripe': '/icons/stripe.svg',
     'Git': '/icons/git.svg',
     'Docker': '/icons/docker.svg',
     'VS Code': '/icons/vscode.png',
-    //'Postman': '/icons/postman.svg',
-    //'Swagger': '/icons/swagger.svg',
     'Figma': '/icons/figma.svg',
 };
 
@@ -35,6 +35,7 @@ export const Skills = () => {
         'Frameworks Frontend': <Layers size={24} className="text-red-400" />,
         'Backend & APIs': <Database size={24} className="text-red-400" />,
         'Bases de Datos & Cloud': <Cloud size={24} className="text-red-400" />,
+        'SaaS & Product': <Rocket size={24} className="text-red-400" />,
         'Herramientas de Desarrollo': <Wrench size={24} className="text-red-400" />,
         'Análisis de Datos': <Brain size={24} className="text-red-400" />,
         'Metodologías & Soft Skills': <Palette size={24} className="text-red-400" />,
@@ -109,7 +110,7 @@ export const Skills = () => {
 
                                                 return (
                                                     <div key={`${skillCategory.category}-${item}-${idx}`} className=" flex-shrink-0 group/item">
-                                                        <div className=" relative flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-slate-800/60 via-slate-800/40 to-slate-900/60 backdrop-blur-xl
+                                                        <div className=" relative flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-slate-800/80 via-slate-800/70 to-slate-900/80
                                                             border border-white/10
                                                             shadow-[0_4px_16px_rgba(0,0,0,0.25)]
                                                             hover:border-red-500/40

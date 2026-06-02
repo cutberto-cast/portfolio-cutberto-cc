@@ -8,17 +8,19 @@ import { motion, Variants } from 'framer-motion';
 
 export const Experience = () => {
     const experiences = [
-        { position: 'Desarrollador Frontend / Fullstack', company: 'Sorum Asesores', period: 'Ene 2025 - Actualidad' },
-        { position: 'Desarrollador Frontend', company: 'Macand', period: '2023 - 2025' },
+        { position: 'Desarrollador Full Stack', company: 'AXCAP', period: '2025 – Presente' },
+        { position: 'Desarrollador Frontend / Fullstack', company: 'Sorum Asesores', period: 'Ene 2025 – Actualidad' },
+        { position: 'Desarrollador Frontend', company: 'Macand', period: '2023 – 2025' },
         { position: 'Analista de Datos', company: 'Bioretail', period: '2024' },
     ];
 
     const highlights = [
-        'Desarrollo de aplicaciones web y móviles con React, Angular y Remix.',
+        '6+ productos SaaS diseñados y entregados bajo AXCAP en menos de 18 meses.',
+        'Desarrollo de aplicaciones web y móviles con Next.js, React y Remix.',
+        'Arquitectura multi-tenant y Row-Level Security con Supabase + Prisma.',
+        'Integraciones de pago con Stripe y MercadoPago.',
         'Análisis geoespacial con Python y Google Cloud.',
-        'Integración de APIs REST, GraphQL y autenticación JWT.',
-        'Diseño de dashboards interactivos.',
-        'Traducción de requerimientos técnicos en soluciones prácticas.'
+        'APIs REST, GraphQL, autenticación JWT y dashboards interactivos.'
     ];
 
     const containerVariants: Variants = {
@@ -86,13 +88,13 @@ export const Experience = () => {
                                 
                                 <div className="space-y-4">
                                     {experiences.map((exp, idx) => (
-                                        <motion.div 
-                                            key={idx} 
+                                        <motion.div
+                                            key={idx}
                                             variants={itemVariants}
-                                            whileHover={{ 
-                                                scale: 1.02, 
+                                            whileHover={{
+                                                scale: 1.02,
                                                 backgroundColor: "rgba(30, 41, 59, 0.4)",
-                                                borderColor: "rgba(220, 38, 38, 0.3)" 
+                                                borderColor: "rgba(220, 38, 38, 0.3)"
                                             }}
                                             className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 rounded-lg bg-slate-800/30 backdrop-blur-sm border border-white/5 transition-all duration-300 group cursor-default"
                                         >
@@ -105,7 +107,7 @@ export const Experience = () => {
                                                         <h5 className="text-base sm:text-lg font-semibold text-white group-hover:text-red-100 transition-colors">
                                                             {exp.position}
                                                         </h5>
-                                                        <div className="flex flex-wrap items-center gap-2 ">
+                                                        <div className="flex flex-wrap items-center gap-2">
                                                             <p className="text-sm text-red-400 font-medium">{exp.company}</p>
                                                             <span className="hidden sm:inline text-slate-600">•</span>
                                                             <p className="text-sm text-slate-500 group-hover:text-slate-400 transition-colors">{exp.period}</p>

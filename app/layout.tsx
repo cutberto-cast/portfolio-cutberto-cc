@@ -10,20 +10,22 @@ const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
 export const metadata: Metadata = {
     title: 'Cutberto Colohua | Portafolio Profesional',
     description: 'Ingeniero en Informática especializado en desarrollo web',
-    keywords: ['developer', 'portfolio','angular', 'react', 'nextjs', '3d'],
+    keywords: ['developer', 'portfolio', 'angular', 'react', 'nextjs', '3d'],
     authors: [{ name: 'Cutberto Castillo' }],
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+    /* metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'), */
+    metadataBase: 'http://localhost:3000',
+
     openGraph: {
-    type: 'website',
-    locale: 'es_ES',
-    url: process.env.NEXT_PUBLIC_SITE_URL,
-    title: 'Cutberto Castillo | Portfolio',
-    description: 'Desarrollador especializado en experiencias web interactivas',
+        type: 'website',
+        locale: 'es_ES',
+        url: process.env.NEXT_PUBLIC_SITE_URL,
+        title: 'Cutberto Castillo | Portfolio',
+        description: 'Desarrollador especializado en experiencias web interactivas',
     },
     icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
-},
+        icon: '/favicon.ico',
+        apple: '/apple-touch-icon.png',
+    },
 }
 
 export default function RootLayout({

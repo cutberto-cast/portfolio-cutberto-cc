@@ -1,89 +1,65 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Github, Lock, ExternalLink, Shield } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Github, Lock, ExternalLink, Shield, CheckCircle2, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { GradientText } from '../ui/GradientTexts';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PROJECTS_DATA, type ProjectData, type ProjectType, type ProjectStatus, type ProjectCategory } from '@/app/lib/constants';
 
-type ProjectType = 'open' | 'nda' | 'private';
+type FilterOption = 'todos' | ProjectCategory;
 
-interface Project {
-    id: number;
-    title: string;
-    description: string;
-    role: string;
-    technologies: string[];
-    images: string[];
-    type: ProjectType;
-    github?: string;
-    demo?: string;
-    company?: string;
-}
-
-type BadgeConfig = {
-    icon: React.ReactNode;
-    text?: string;
-    color: string;
+const FILTER_LABELS: Record<FilterOption, string> = {
+    todos: 'Todos',
+    saas: 'SaaS',
+    landing: 'Landing Page',
+    webapp: 'Web App',
 };
 
-type BadgeConfigMap = Record<ProjectType, BadgeConfig>;
-
-const ProjectTypeBadge = ({ type }: { type: ProjectType }) => {
-    const config: BadgeConfigMap = {
-        open: {
-            icon: <Github size={14} />,
-            color: 'bg-green-500/10 border-green-500/30 text-green-400'
-        },
-        nda: {
-            icon: <Shield size={14} />,
-            text: 'Bajo NDA',
-            color: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
-        },
-        private: {
-            icon: <Lock size={14} />,
-            text: 'Confidencial',
-            color: 'bg-red-500/10 border-red-500/30 text-red-400'
-        }
-    };
-
-    const { icon, text, color } = config[type];
-
+const StatusBadge = ({ status }: { status?: ProjectStatus }) => {
+    if (!status) return null;
+    const isComplete = status === 'completado';
     return (
-        <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium border ${color}`}>
-            {icon}
-            {text && <span>{text}</span>}
+        <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium border ${
+            isComplete
+                ? 'bg-green-500/10 border-green-500/30 text-green-400'
+                : 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400'
+        }`}>
+            {isComplete ? <CheckCircle2 size={12} /> : <Clock size={12} />}
+            <span>{isComplete ? 'Completado' : 'En desarrollo'}</span>
         </div>
     );
 };
 
-const ImageGallery = ({ images, title }: { images: string[], title: string }) => {
+const ProjectTypeBadge = ({ type }: { type: ProjectType }) => {
+    const config = {
+        open: { icon: <Github size={14} />, text: 'Open', color: 'bg-green-500/10 border-green-500/30 text-green-400' },
+        nda: { icon: <Shield size={14} />, text: 'Bajo NDA', color: 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400' },
+        private: { icon: <Lock size={14} />, text: 'Confidencial', color: 'bg-red-500/10 border-red-500/30 text-red-400' },
+    };
+    const { icon, text, color } = config[type];
+    return (
+        <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium border ${color}`}>
+            {icon}
+            <span>{text}</span>
+        </div>
+    );
+};
+
+const ImageGallery = ({ images, title }: { images: string[]; title: string }) => {
     const [current, setCurrent] = useState(0);
     const [direction, setDirection] = useState(0);
 
     const slideVariants = {
-        enter: (direction: number) => ({
-            x: direction > 0 ? 300 : -300,
-            opacity: 0
-        }),
-        center: {
-            zIndex: 1,
-            x: 0,
-            opacity: 1
-        },
-        exit: (direction: number) => ({
-            zIndex: 0,
-            x: direction < 0 ? 300 : -300,
-            opacity: 0
-        })
+        enter: (dir: number) => ({ x: dir > 0 ? 300 : -300, opacity: 0 }),
+        center: { zIndex: 1, x: 0, opacity: 1 },
+        exit: (dir: number) => ({ zIndex: 0, x: dir < 0 ? 300 : -300, opacity: 0 }),
     };
 
-    const paginate = (newDirection: number) => {
-        setDirection(newDirection);
-        if (newDirection === 1) {
-            setCurrent((prev) => (prev + 1) % images.length);
-        } else {
-            setCurrent((prev) => (prev - 1 + images.length) % images.length);
-        }
+    const paginate = (newDir: number) => {
+        setDirection(newDir);
+        setCurrent((prev) =>
+            newDir === 1 ? (prev + 1) % images.length : (prev - 1 + images.length) % images.length
+        );
     };
 
     return (
@@ -100,33 +76,20 @@ const ImageGallery = ({ images, title }: { images: string[], title: string }) =>
                             initial="enter"
                             animate="center"
                             exit="exit"
-                            transition={{
-                                x: { type: "spring", stiffness: 300, damping: 30 },
-                                opacity: { duration: 0.2 }
-                            }}
+                            transition={{ x: { type: 'spring', stiffness: 300, damping: 30 }, opacity: { duration: 0.2 } }}
                             className="absolute w-full h-full object-cover"
                         />
                     </AnimatePresence>
-
                     {images.length > 1 && (
                         <>
-                            <motion.button
-                                whileHover={{ scale: 1.1, backgroundColor: "rgba(0,0,0,0.8)" }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => paginate(-1)}
-                                className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                            >
+                            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => paginate(-1)}
+                                className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <ChevronLeft size={20} />
                             </motion.button>
-                            <motion.button
-                                whileHover={{ scale: 1.1, backgroundColor: "rgba(0,0,0,0.8)" }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => paginate(1)}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                            >
+                            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={() => paginate(1)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <ChevronRight size={20} />
                             </motion.button>
-
                             <div className="absolute bottom-2 right-2 px-3 py-1 rounded-lg bg-black/60 backdrop-blur-sm text-xs text-white z-10">
                                 {current + 1} / {images.length}
                             </div>
@@ -136,13 +99,10 @@ const ImageGallery = ({ images, title }: { images: string[], title: string }) =>
             ) : (
                 <div className="w-full h-full flex items-center justify-center bg-slate-900/50">
                     <div className="text-center">
-                        <motion.div
-                            animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 3, repeat: Infinity }}
-                        >
+                        <motion.div animate={{ scale: [1, 1.1, 1], opacity: [0.5, 1, 0.5] }} transition={{ duration: 3, repeat: Infinity }}>
                             <Shield size={48} className="mx-auto mb-2 text-gray-600" />
                         </motion.div>
-                        <p className="text-gray-500 text-sm">Contenido protegido por NDA</p>
+                        <p className="text-gray-500 text-sm">Capturas próximamente</p>
                     </div>
                 </div>
             )}
@@ -150,182 +110,199 @@ const ImageGallery = ({ images, title }: { images: string[], title: string }) =>
     );
 };
 
+const ProjectCard = ({ project, index }: { project: ProjectData; index: number }) => {
+    const [showFeatures, setShowFeatures] = useState(false);
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.7, delay: index * 0.08 }}
+            className="glass-card rounded-2xl overflow-hidden border border-white/5 bg-slate-900/30 hover:border-white/10 transition-colors"
+        >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 md:p-8">
+                <div>
+                    <ImageGallery images={project.images} title={project.title} />
+                    {project.images.length > 1 && (
+                        <div className="flex justify-center gap-2 mt-4">
+                            {project.images.map((_, idx) => (
+                                <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-lava-bright w-6 opacity-50' : 'bg-gray-700 w-1.5'}`} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className="flex flex-col h-full">
+                    <div className="flex items-start justify-between mb-3 gap-4">
+                        <div className="flex-1 min-w-0">
+                            <h3 className="text-2xl md:text-3xl font-bold text-white mb-1 leading-tight">{project.title}</h3>
+                            <p className="text-red-400 font-medium text-sm">{project.role}</p>
+                        </div>
+                        <div className="flex flex-col gap-1.5 items-end flex-shrink-0">
+                            <ProjectTypeBadge type={project.type} />
+                            <StatusBadge status={project.status} />
+                        </div>
+                    </div>
+
+                    <div className="flex-grow">
+                        <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-5">{project.description}</p>
+
+                        {(project.type === 'nda' || project.type === 'private') && (
+                            <div className="mb-5 p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/10 flex gap-3">
+                                <Shield size={20} className="text-yellow-500 flex-shrink-0 mt-0.5" />
+                                <div className="text-xs md:text-sm text-gray-400">
+                                    <p className="text-yellow-500/90 font-medium mb-1">
+                                        {project.type === 'nda' ? 'Acceso Restringido' : 'Proyecto Confidencial'}
+                                    </p>
+                                    {project.type === 'nda'
+                                        ? 'Este proyecto está protegido por NDA. Las capturas mostradas pertenecen a módulos públicos o autorizados.'
+                                        : 'Desarrollado bajo estricto contrato de confidencialidad.'}
+                                    {project.company && <span className="block mt-1 opacity-70">Para: {project.company}</span>}
+                                </div>
+                            </div>
+                        )}
+
+                        {project.features && project.features.length > 0 && (
+                            <div className="mb-5">
+                                <button
+                                    onClick={() => setShowFeatures(!showFeatures)}
+                                    className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 hover:text-red-400 transition-colors"
+                                >
+                                    Funcionalidades clave
+                                    {showFeatures ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                                </button>
+                                <AnimatePresence>
+                                    {showFeatures && (
+                                        <motion.ul
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            transition={{ duration: 0.2 }}
+                                            className="space-y-1.5 overflow-hidden"
+                                        >
+                                            {project.features.map((feat, i) => (
+                                                <li key={i} className="flex gap-2 text-xs text-gray-400 leading-relaxed">
+                                                    <span className="text-red-500 mt-1 flex-shrink-0">●</span>
+                                                    <span>{feat}</span>
+                                                </li>
+                                            ))}
+                                        </motion.ul>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                        )}
+
+                        <div className="mb-6">
+                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Tecnologías</h4>
+                            <div className="flex flex-wrap gap-2">
+                                {project.technologies.map((tech, idx) => (
+                                    <motion.span
+                                        key={idx}
+                                        whileHover={{ scale: 1.05, y: -2 }}
+                                        className="px-3 py-1.5 rounded-lg bg-slate-800/50 border border-white/5 text-xs text-gray-300 cursor-default hover:text-white hover:border-white/20 transition-colors"
+                                    >
+                                        {tech}
+                                    </motion.span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {(project.github || project.demo) && (
+                        <div className="flex flex-wrap gap-4 mt-auto pt-6 border-t border-white/5">
+                            {project.github && (
+                                <motion.a href={project.github} target="_blank" rel="noopener noreferrer"
+                                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium transition-colors">
+                                    <Github size={18} />
+                                    <span>Código Fuente</span>
+                                </motion.a>
+                            )}
+                            {project.demo && (
+                                <motion.a href={project.demo} target="_blank" rel="noopener noreferrer"
+                                    whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white text-sm font-medium shadow-lg shadow-red-900/20 transition-all">
+                                    <ExternalLink size={18} />
+                                    <span>Ver Demo</span>
+                                </motion.a>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
 export const Projects: React.FC = () => {
-    const projects: Project[] = [
-        {
-            id: 1,
-            title: 'Sistema de Gestión de Proyectos Inmobiliarios',
-            description: 'Plataforma completa para gestión de proyectos inmobiliarios. Incluye administración de finanzas (ingresos/gastos), repositorio de documentación, y cronograma tipo Gantt para seguimiento de etapas y hitos del proyecto.',
-            role: 'Desarrollador Full Stack',
-            technologies: ['Angular', 'TypeScript', 'RxJS', 'Angular Material ', 'Spring Boot', 'JWT', 'REST AP', 'Postman'],
-            images: [
-                '/projects/project-manager-1.png',
-                '/projects/project-manager-2.png',
-                '/projects/project-manager-3.png',
-            ],
-            type: 'open',
-            github: 'https://github.com/tu-usuario/project-manager',
-        },
-        {
-            id: 2,
-            title: 'Sistema de Recompensas Inter-empresarial',
-            description: 'Sistema de intercambio de recompensas entre grupo de empresas asociadas. Los usuarios acumulan puntos consumiendo en una empresa miembro y pueden canjearlos en otras empresas del grupo.',
-            role: 'Desarrollador Frontend (Colaboración)',
-            technologies: ['Angular', 'TypeScript', 'RxJS', 'Angular Material ', 'Spring Boot', 'JWT', 'REST AP', 'Postman'],
-            images: [
-                '/projects/rewards-login.png',
-                '/projects/rewards-signup.png',
-            ],
-            type: 'nda',
-            company: 'Cliente empresarial',
-        },
-        {
-            id: 3,
-            title: 'App Móvil de Gestión de Repartidores',
-            description: 'Aplicación móvil (React Native) y panel web de administración para gestión completa de repartidores. La app móvil maneja tareas diarias: rutas, entregas, cobranza. El panel web permite asignar tareas, gestionar permisos y monitorear operaciones en tiempo real.',
-            role: 'Desarrollador Full Stack (Mobile + Web)',
-            technologies: ['React Native', 'React', 'Expo', 'Node.js', 'Fetch API', 'Axios ', 'TypeScript'],
-            images: [],
-            type: 'private',
-            company: 'Empresa de logística',
-        },
-    ];
+    const [activeFilter, setActiveFilter] = useState<FilterOption>('todos');
+    const filters: FilterOption[] = ['todos', 'saas', 'landing', 'webapp'];
+
+    const filtered = activeFilter === 'todos'
+        ? PROJECTS_DATA
+        : PROJECTS_DATA.filter((p) => p.category === activeFilter);
 
     return (
         <section id="projects" className="min-h-screen flex items-center section-padding py-20">
             <div className="max-w-7xl w-full mx-auto px-4 md:px-8">
-                
-                <motion.div 
+
+                <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6 }}
-                    className="text-center mb-12"
+                    className="text-center mb-10"
                 >
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                         <GradientText>Proyectos</GradientText> Destacados
                     </h2>
                     <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-                        Selección de proyectos donde he aplicado mis habilidades en desarrollo full-stack.
-                        Algunos proyectos están protegidos por acuerdos de confidencialidad (NDA).
+                        Productos SaaS y aplicaciones desarrolladas como fundador de AXCAP y en colaboraciones profesionales.
                     </p>
                 </motion.div>
 
-                <div className="space-y-12">
-                    {projects.map((project, index) => (
-                        <motion.div
-                            key={project.id}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: "-100px" }}
-                            transition={{ duration: 0.7, delay: index * 0.1 }}
-                            className="glass-card rounded-2xl overflow-hidden border border-white/5 bg-slate-900/30 hover:border-white/10 transition-colors"
+                <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.2 }}
+                    className="flex flex-wrap gap-2 justify-center mb-10"
+                >
+                    {filters.map((filter) => (
+                        <button
+                            key={filter}
+                            onClick={() => setActiveFilter(filter)}
+                            className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 border ${
+                                activeFilter === filter
+                                    ? 'bg-red-600/80 border-red-500/50 text-white shadow-[0_0_15px_rgba(220,38,38,0.3)]'
+                                    : 'bg-slate-800/50 border-white/10 text-gray-400 hover:text-white hover:border-white/20'
+                            }`}
                         >
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 md:p-8">
-                                
-                                <div>
-                                    <ImageGallery images={project.images} title={project.title} />
-
-                                    {project.images.length > 1 && (
-                                        <div className="flex justify-center gap-2 mt-4">
-                                            {project.images.map((_, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    className={`h-1.5 rounded-full transition-all duration-300 ${idx === 0
-                                                        ? 'bg-lava-bright w-6 opacity-50'
-                                                        : 'bg-gray-700 w-1.5'
-                                                        }`}
-                                                />
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="flex flex-col h-full">
-                                    <div className="flex items-start justify-between mb-4 gap-4">
-                                        <div>
-                                            <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 leading-tight">
-                                                {project.title}
-                                            </h3>
-                                            <p className="text-red-400 font-medium text-sm">
-                                                {project.role}
-                                            </p>
-                                        </div>
-                                        <ProjectTypeBadge type={project.type} />
-                                    </div>
-
-                                    <div className="flex-grow">
-                                        <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-6">
-                                            {project.description}
-                                        </p>
-
-                                        {(project.type === 'nda' || project.type === 'private') && (
-                                            <div className="mb-6 p-4 rounded-xl bg-yellow-500/5 border border-yellow-500/10 flex gap-3">
-                                                <Shield size={20} className="text-yellow-500 flex-shrink-0 mt-0.5" />
-                                                <div className="text-xs md:text-sm text-gray-400">
-                                                    <p className="text-yellow-500/90 font-medium mb-1">
-                                                        {project.type === 'nda' ? 'Acceso Restringido' : 'Proyecto Confidencial'}
-                                                    </p>
-                                                    {project.type === 'nda'
-                                                        ? 'Este proyecto está protegido por NDA. Las capturas mostradas pertenecen a módulos públicos o autorizados.'
-                                                        : 'Desarrollado bajo estricto contrato de confidencialidad. No es posible mostrar código ni interfaces.'
-                                                    }
-                                                    {project.company && <span className="block mt-1 opacity-70">Para: {project.company}</span>}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <div className="mb-8">
-                                            <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Tecnologías</h4>
-                                            <div className="flex flex-wrap gap-2">
-                                                {project.technologies.map((tech, idx) => (
-                                                    <motion.span
-                                                        key={idx}
-                                                        whileHover={{ scale: 1.05, y: -2 }}
-                                                        className="px-3 py-1.5 rounded-lg bg-slate-800/50 border border-white/5 text-xs text-gray-300 cursor-default hover:text-white hover:border-white/20 transition-colors"
-                                                    >
-                                                        {tech}
-                                                    </motion.span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {(project.github || project.demo) && (
-                                        <div className="flex flex-wrap gap-4 mt-auto pt-6 border-t border-white/5">
-                                            {project.github && (
-                                                <motion.a
-                                                    href={project.github}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    whileHover={{ scale: 1.02 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium transition-colors"
-                                                >
-                                                    <Github size={18} />
-                                                    <span>Código Fuente</span>
-                                                </motion.a>
-                                            )}
-                                            {project.demo && (
-                                                <motion.a
-                                                    href={project.demo}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    whileHover={{ scale: 1.02 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white text-sm font-medium shadow-lg shadow-red-900/20 transition-all"
-                                                >
-                                                    <ExternalLink size={18} />
-                                                    <span>Ver Demo</span>
-                                                </motion.a>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </motion.div>
+                            {FILTER_LABELS[filter]}
+                            {filter !== 'todos' && (
+                                <span className="ml-2 text-xs opacity-70">
+                                    {PROJECTS_DATA.filter((p) => p.category === filter).length}
+                                </span>
+                            )}
+                        </button>
                     ))}
-                </div>
+                </motion.div>
+
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeFilter}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="space-y-12"
+                    >
+                        {filtered.map((project, index) => (
+                            <ProjectCard key={project.id} project={project} index={index} />
+                        ))}
+                    </motion.div>
+                </AnimatePresence>
             </div>
         </section>
     );
