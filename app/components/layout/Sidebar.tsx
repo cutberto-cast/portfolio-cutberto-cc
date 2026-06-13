@@ -20,66 +20,70 @@ export default function Sidebar() {
     const liquidGlassStyle = `relative bg-black/40 backdrop-blur-xl border border-white/5 shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] ${shapeStyle}`;
 
     const scrollToSection = (href: string) => {
-        const container = document.getElementById('main-scroll-container');
         const element = document.querySelector(href) as HTMLElement;
-
-        if (container && element) {
-            const topPos = element.offsetTop - container.offsetTop;
-            container.scrollTo({ top: topPos - 40, behavior: 'smooth' });
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
             setActiveSection(href.substring(1));
         }
     };
 
     useEffect(() => {
-        const container = document.getElementById('main-scroll-container');
-        if (!container) return;
-
-        const handleScroll = () => {
-            const scrollPosition = container.scrollTop + (container.clientHeight / 3);
-            for (const item of navigation) {
-                const element = document.querySelector(item.href) as HTMLElement;
-                if (element) {
-                    const top = element.offsetTop;
-                    const height = element.offsetHeight;
-                    if (scrollPosition >= top && scrollPosition < top + height) {
-                        setActiveSection(item.href.substring(1));
-                        break;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setActiveSection(entry.target.id);
                     }
-                }
+                });
+            },
+            {
+                root: null,
+                rootMargin: '-20% 0px -70% 0px',
+                threshold: 0,
             }
-        };
+        );
 
-        container.addEventListener('scroll', handleScroll);
-        return () => container.removeEventListener('scroll', handleScroll);
+        navigation.forEach(item => {
+            const el = document.querySelector(item.href);
+            if (el) observer.observe(el);
+        });
+
+        return () => observer.disconnect();
     }, []);
 
-    const borderEffectSvg = (
-        <svg className="absolute inset-0 w-full h-full -z-10 pointer-events-none overflow-visible">
-            <rect
-                x="1" y="1"
-                width="99%" height="99%"
-                rx="40"
-                fill="none"
-                stroke="#DC2626"
-                strokeWidth="2"
-                strokeLinecap="round"
-                pathLength="100"
-                strokeDasharray="15 85"
-                className="animate-border-travel"
+    const borderEffect = (
+        <>
+            <div
+                className="absolute inset-0 -z-10 pointer-events-none rounded-[2.5rem]"
                 style={{
-                    filter: 'drop-shadow(0 0 5px rgba(220, 38, 38, 1)) drop-shadow(0 0 20px rgba(220, 38, 38, 0.5))'
+                    boxShadow: '0 0 0 1.5px rgba(220,38,38,0.6), 0 0 18px 2px rgba(220,38,38,0.25)',
                 }}
             />
-        </svg>
+            <svg
+                className="absolute inset-0 w-full h-full -z-10 pointer-events-none overflow-visible"
+                style={{ transform: 'translateZ(0)', willChange: 'transform' }}
+            >
+                <rect
+                    x="1" y="1"
+                    width="99%" height="99%"
+                    rx="40"
+                    fill="none"
+                    stroke="#DC2626"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    pathLength="100"
+                    strokeDasharray="15 85"
+                    className="animate-border-travel"
+                />
+            </svg>
+        </>
     );
 
     return (
         <>
             <nav className="hidden lg:flex fixed left-6 top-1/2 -translate-y-1/2 z-50 flex-col gap-6">
-                <div className={cn("flex flex-col gap-3 p-3 transition-all duration-300", liquidGlassStyle)}>
-                    
-                    {borderEffectSvg}
-
+                <div className={cn("flex flex-col gap-3 p-3", liquidGlassStyle)}>
+                    {borderEffect}
                     {navigation.map((item) => {
                         const Icon = item.icon;
                         const isActive = activeSection === item.href.substring(1);
@@ -97,20 +101,22 @@ export default function Sidebar() {
                                     <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                                 </button>
                             </div>
-                        )
+                        );
                     })}
                 </div>
             </nav>
 
             <nav className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md">
                 <div className={cn("flex items-center justify-between px-6 py-4", liquidGlassStyle)}>
-                    
-                    {borderEffectSvg}
-
+                    {borderEffect}
                     {navigation.map((item) => {
                         const isActive = activeSection === item.href.substring(1);
                         return (
-                            <button key={item.name} onClick={() => scrollToSection(item.href)} className="relative flex flex-col items-center z-10">
+                            <button
+                                key={item.name}
+                                onClick={() => scrollToSection(item.href)}
+                                className="relative flex flex-col items-center z-10"
+                            >
                                 <item.icon
                                     size={24}
                                     className={cn(
@@ -119,7 +125,7 @@ export default function Sidebar() {
                                     )}
                                 />
                             </button>
-                        )
+                        );
                     })}
                 </div>
             </nav>

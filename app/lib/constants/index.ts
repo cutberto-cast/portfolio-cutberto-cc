@@ -77,10 +77,6 @@ export const SKILLS_DATA = [
         items: ['Supabase', 'PostgreSQL', 'Vercel', 'MongoDB', 'Google Cloud', 'Firebase']
     },
     {
-        category: 'SaaS & Product',
-        items: ['Multi-tenant', 'Stripe', 'MercadoPago', 'Auth', 'Row-Level Security', 'SaaS Architecture']
-    },
-    {
         category: 'Herramientas de Desarrollo',
         items: ['Git', 'Docker', 'VS Code', 'Postman', 'Swagger', 'Figma']
     },

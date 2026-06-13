@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Card } from '../ui/Card';
 import { Code, Cpu, Globe } from 'lucide-react';
-import { motion, Variants } from 'framer-motion';
 
 function useCountUp(target: number, duration = 1500, start = false) {
     const [count, setCount] = useState(0);
@@ -43,96 +42,45 @@ export const About = () => {
         { value: clientsCount, suffix: '+', label: 'Clientes' },
     ];
 
-    const cardVariants: Variants = {
-        hidden: { 
-            opacity: 0, 
-            y: 50 
-        },
-        visible: { 
-            opacity: 1, 
-            y: 0,
-            transition: { 
-                duration: 0.6,
-                ease: "easeOut",
-                when: "beforeChildren",
-                staggerChildren: 0.2
-            }
-        }
-    };
-
-    const textVariants: Variants = {
-        hidden: { opacity: 0, x: 20 },
-        visible: { 
-            opacity: 1, 
-            x: 0,
-            transition: { duration: 0.5 }
-        }
-    };
-
-    const imageVariants: Variants = {
-        hidden: { opacity: 0, scale: 0.95 },
-        visible: { 
-            opacity: 1, 
-            scale: 1,
-            transition: { duration: 0.8, ease: "easeOut" }
-        }
-    };
-
     return (
         <section id="about" className="min-h-[90vh] flex items-center justify-center px-4 relative">
-            
-            <motion.div 
-                className="max-w-7xl w-full mx-auto"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
-                variants={cardVariants}
-            >
+            <div className="max-w-7xl w-full mx-auto">
                 <Card glass="pure" className="min-h-[auto] lg:h-[550px] p-0 border border-white/10 overflow-hidden">
-                    
                     <div className="flex flex-col lg:flex-row w-full h-full">
-                        
-                        <motion.div 
-                            variants={imageVariants}
-                            className="w-full lg:w-auto h-72 lg:h-full relative flex-shrink-0 group overflow-hidden flex items-center justify-center bg-slate-900/20"
-                        >
+
+                        <div className="w-full lg:w-auto h-72 lg:h-full relative flex-shrink-0 overflow-hidden flex items-center justify-center bg-slate-900/20">
                             <div className="absolute inset-0 bg-slate-900/10 z-10" />
-                            
-                            <motion.img
+                            <img
                                 src="/yo1.jpeg"
                                 alt="Cutberto Colohua"
                                 className="w-full h-full object-cover object-center lg:w-auto lg:object-contain"
-                                whileHover={{ scale: 1.05 }}
-                                transition={{ duration: 0.4 }}
                             />
-                            
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60" />
-                        </motion.div>
+                        </div>
 
                         <div className="w-full lg:flex-1 p-6 lg:p-10 flex flex-col justify-center relative bg-slate-900/10 lg:bg-transparent">
-                            
-                            <motion.div className="mb-6 border-b border-white/10 pb-4" variants={textVariants}>
+
+                            <div className="mb-6 border-b border-white/10 pb-4">
                                 <h2 className="font-outfit text-3xl lg:text-4xl font-bold text-white mb-1">
                                     Sobre Mí
                                 </h2>
                                 <h3 className="font-outfit text-xl text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-300 font-medium">
                                     Cutberto Colohua
                                 </h3>
-                            </motion.div>
+                            </div>
 
-                            <motion.div className="space-y-4 font-inter text-slate-300 text-sm lg:text-base leading-relaxed" variants={textVariants}>
+                            <div className="space-y-4 font-inter text-slate-300 text-sm lg:text-base leading-relaxed">
                                 <p>
                                     Soy <strong className="text-white">Ingeniero en Informática</strong> especializado en desarrollo Full Stack, con experiencia construyendo productos SaaS en producción para sectores como gastronomía, belleza, salud y distribución.
                                 </p>
                                 <p>
                                     Mi stack principal es <strong className="text-white">Next.js + Supabase + Prisma</strong>. Me enfoco en <strong className="text-red-400">entender el problema real</strong> antes de escribir código — traduciendo requerimientos de negocio en sistemas eficientes, escalables y fáciles de mantener.
                                 </p>
-                            </motion.div>
+                            </div>
 
-                            <motion.div
+                            <div
                                 ref={metricsRef}
                                 className="mt-6 pt-5 border-t border-white/5 grid grid-cols-3 gap-4"
-                                variants={textVariants}
                             >
                                 {metrics.map((m, i) => (
                                     <div key={i} className="text-center">
@@ -142,34 +90,30 @@ export const About = () => {
                                         <p className="text-xs text-slate-400 mt-1 leading-tight">{m.label}</p>
                                     </div>
                                 ))}
-                            </motion.div>
+                            </div>
 
-                            <motion.div
-                                className="mt-6 pt-4 border-t border-white/5 flex gap-4 lg:gap-8 overflow-x-auto"
-                                variants={textVariants}
-                            >
+                            <div className="mt-6 pt-4 border-t border-white/5 flex gap-4 lg:gap-8">
                                 {[
                                     { Icon: Code, text: "SaaS Dev" },
                                     { Icon: Cpu, text: "Arquitectura" },
                                     { Icon: Globe, text: "Productos" }
                                 ].map((item, index) => (
-                                    <motion.div
+                                    <div
                                         key={index}
-                                        className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors cursor-default"
-                                        whileHover={{ y: -2, color: "#fff" }}
+                                        className="flex items-center gap-2 text-slate-400 cursor-default"
                                     >
-                                        <item.Icon size={18} className="text-red-500"/>
+                                        <item.Icon size={18} className="text-red-500" />
                                         <span className="text-xs font-medium uppercase tracking-wider whitespace-nowrap">
                                             {item.text}
                                         </span>
-                                    </motion.div>
+                                    </div>
                                 ))}
-                            </motion.div>
+                            </div>
 
                         </div>
                     </div>
                 </Card>
-            </motion.div>
+            </div>
         </section>
     );
 };

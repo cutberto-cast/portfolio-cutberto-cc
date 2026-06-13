@@ -23,13 +23,7 @@ export const Hero = () => {
     return (
         <section
             id="home"
-            className="
-                min-h-[96vh] flex items-center justify-center bg-black relative
-                /* Anulamos los paddings del MainLayout */
-                -mx-4 md:-mx-10 lg:-ml-28 lg:-mr-10 
-                /* Aseguramos que el contenido no toque los bordes físicos de la pantalla */
-                px-4 md:px-10 lg:pl-28 
-            "
+            className="min-h-[96vh] flex items-center justify-center bg-black relative -mx-4 md:-mx-10 lg:-ml-28 lg:-mr-10 px-4 md:px-10 lg:pl-28"
         >
             <div className="w-full max-w-5xl mx-auto flex flex-col items-center relative">
                 <div className="w-full flex justify-center bg-black overflow-hidden">
@@ -57,81 +51,43 @@ export const Hero = () => {
                     <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
                         <a
                             href="#projects"
-                            className="px-8 py-3 rounded-full text-black font-bold hover:text-white transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.1)] active:scale-95"
-                            style={{
-                                backgroundColor: 'rgba(255, 255, 255, 0.54)',
-                                transition: 'background-color 0.3s ease'
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(220, 38, 38, 0.54)'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.54)'}
+                            className="px-8 py-3 rounded-full text-black font-bold"
+                            style={{ backgroundColor: 'rgba(255, 255, 255, 0.54)' }}
                         >
                             Ver mis proyectos →
                         </a>
-                        <a
-                            href="#contact"
-                            className="px-8 py-3 rounded-full font-bold transition-all duration-300 active:scale-95 border"
+                        <button
+                            onClick={handleDownloadCV}
+                            className="flex items-center gap-2 px-8 py-3 rounded-full font-bold border"
                             style={{
                                 backgroundColor: 'transparent',
                                 color: 'rgba(255,255,255,0.85)',
                                 borderColor: 'rgba(255,255,255,0.25)',
-                                transition: 'all 0.3s ease'
-                            }}
-                            onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor = 'rgba(220, 38, 38, 0.54)';
-                                e.currentTarget.style.borderColor = 'rgb(114, 6, 6)';
-                                e.currentTarget.style.color = 'white';
-                            }}
-                            onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = 'transparent';
-                                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)';
-                                e.currentTarget.style.color = 'rgba(255,255,255,0.85)';
                             }}
                         >
-                            Trabajemos juntos
-                        </a>
-                    </div>
-
-                    <div className="flex gap-4">
-                        <button
-                            onClick={handleDownloadCV}
-                            className="text-xs text-gray-500 hover:text-gray-300 transition-colors underline underline-offset-2"
-                        >
+                            <Download size={16} />
                             Descargar CV
                         </button>
                     </div>
 
                     <div className="flex gap-4 mt-4">
                         {contactLinks.map((item, idx) => {
-                                const Icon = item.icon;
-                                return (
-                                    <a
-                                        key={idx}
-                                        href={item.href}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-3 rounded-full border border-white/10 text-gray-400 transition-all"
-                                        style={{
-                                            backgroundColor: 'transparent',
-                                            transition: 'all 0.3s ease'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.backgroundColor = 'rgba(220, 38, 38, 0.54)';
-                                            e.currentTarget.style.borderColor = 'rgb(114, 6, 6)';
-                                            e.currentTarget.style.color = 'white';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.backgroundColor = 'transparent';
-                                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                                            e.currentTarget.style.color = 'rgb(156, 163, 175)'; // text-gray-400
-                                        }}
-                                    >
-                                        <Icon size={18} />
-                                    </a>
-                                );
-                            })}
-                        </div>
+                            const Icon = item.icon;
+                            return (
+                                <a
+                                    key={idx}
+                                    href={item.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-3 rounded-full border border-white/10 text-gray-400"
+                                >
+                                    <Icon size={18} />
+                                </a>
+                            );
+                        })}
                     </div>
                 </div>
+            </div>
         </section>
     );
 };

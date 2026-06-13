@@ -25,19 +25,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 className={cn(
                     'inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 disabled:pointer-events-none disabled:opacity-50',
                     {
-                        'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg hover:from-red-700 hover:to-red-800 hover:shadow-xl active:scale-95':
+                        'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg':
                             variant === 'primary',
 
-                        'bg-slate-700 text-white border border-slate-600 hover:bg-slate-600 hover:border-slate-500':
+                        'bg-slate-700 text-white border border-slate-600':
                             variant === 'secondary',
 
-                        'glass-button-dark text-white hover:shadow-lg hover:border-white/20':
+                        'glass-button-dark text-white':
                             variant === 'glass',
 
-                        'border border-red-600 text-red-600 hover:bg-red-600 hover:text-white':
+                        'border border-red-600 text-red-600':
                             variant === 'outline',
 
-                        'text-gray-300 hover:text-white hover:bg-white/5':
+                        'text-gray-300':
                             variant === 'ghost',
                     },
                     {

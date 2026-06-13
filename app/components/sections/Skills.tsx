@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Code, Database, Cloud, Wrench, Palette, Brain, Layers, Rocket } from 'lucide-react';
-import { Card } from '../ui/Card';
+import { Code, Database, Cloud, Wrench, Palette, Brain, Layers } from 'lucide-react';
 import { SKILLS_DATA } from '@/app/lib/constants';
 
 const techIcons: Record<string, string> = {
@@ -29,127 +28,64 @@ const techIcons: Record<string, string> = {
     'Figma': '/icons/figma.svg',
 };
 
-export const Skills = () => {
-    const categoryIcons: Record<string, React.ReactNode> = {
-        'Lenguajes de Programación': <Code size={24} className="text-red-400" />,
-        'Frameworks Frontend': <Layers size={24} className="text-red-400" />,
-        'Backend & APIs': <Database size={24} className="text-red-400" />,
-        'Bases de Datos & Cloud': <Cloud size={24} className="text-red-400" />,
-        'SaaS & Product': <Rocket size={24} className="text-red-400" />,
-        'Herramientas de Desarrollo': <Wrench size={24} className="text-red-400" />,
-        'Análisis de Datos': <Brain size={24} className="text-red-400" />,
-        'Metodologías & Soft Skills': <Palette size={24} className="text-red-400" />,
-    };
+const categoryIcons: Record<string, React.ReactNode> = {
+    'Lenguajes de Programación': <Code size={18} className="text-red-400" />,
+    'Frameworks Frontend': <Layers size={18} className="text-red-400" />,
+    'Backend & APIs': <Database size={18} className="text-red-400" />,
+    'Bases de Datos & Cloud': <Cloud size={18} className="text-red-400" />,
+    'Herramientas de Desarrollo': <Wrench size={18} className="text-red-400" />,
+    'Análisis de Datos': <Brain size={18} className="text-red-400" />,
+    'Metodologías & Soft Skills': <Palette size={18} className="text-red-400" />,
+};
 
+export const Skills = () => {
     return (
         <section
             id="skills"
-            className="min-h-screen flex items-center px-4 md:px-8 py-20 overflow-hidden relative"
+            className="min-h-screen flex items-center px-4 md:px-8 py-20"
         >
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-red-950/5 to-transparent pointer-events-none"></div>
-
-            <div className="max-w-7xl w-full mx-auto relative z-10">
+            <div className="max-w-7xl w-full mx-auto">
                 <h2 className="text-4xl font-bold text-white mb-12 text-center md:text-left">
                     Habilidades Técnicas
                 </h2>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-                    {SKILLS_DATA.map((skillCategory) => {
-                        const carouselItems = [
-                            ...skillCategory.items,
-                            ...skillCategory.items,
-                            ...skillCategory.items,
-                            ...skillCategory.items,
-                            ...skillCategory.items,
-                            ...skillCategory.items,
-                            ...skillCategory.items,
-                            ...skillCategory.items,
-                        ];
-
-                        return (
-                            <Card
-                                key={skillCategory.category}
-                                className="
-                                    p-0 overflow-hidden
-                                    group
-                                    shadow-[0_8px_32px_rgba(0,0,0,0.3)]                                   
-                                    border border-white/10
-                                    hover:border-red-500/30
-                                    transition-all duration-500 ">
-                                <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent"></div>
-
-                                <div className="p-6 bg-gradient-to-br from-red-950/20 to-transparent border-b border-white/5">
-                                    <div className="flex items-center gap-4">
-                                        <div className=" relative w-14 h-14  rounded-xl  bg-gradient-to-br from-red-600/20 via-red-700/10 to-transparent backdrop-blur-xl  flex items-center justify-center 
-                                            border border-red-500/20
-                                            shadow-[0_0_20px_rgba(220,38,38,0.15)]
-                                            group-hover:shadow-[0_0_30px_rgba(220,38,38,0.3)]
-                                            group-hover:border-red-500/40
-                                            transition-all duration-500">
-                                            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/10 to-transparent opacity-50"></div>
-                                            <div className="relative z-10">
-                                                {categoryIcons[skillCategory.category] || <Code size={24} className="text-red-400" />}
-                                            </div>
-                                        </div>
-
-                                        <h3 className="text-lg sm:text-xl font-bold text-white group-hover:text-red-100 transition-colors leading-tight">
-                                            {skillCategory.category}
-                                        </h3>
-                                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                    {SKILLS_DATA.map((skillCategory) => (
+                        <div
+                            key={skillCategory.category}
+                            className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"
+                        >
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+                                    {categoryIcons[skillCategory.category] || <Code size={18} className="text-red-400" />}
                                 </div>
+                                <h3 className="text-sm font-semibold text-white/90 leading-tight">
+                                    {skillCategory.category}
+                                </h3>
+                            </div>
 
-                                <div className="relative py-8 px-4 bg-black/10">
-                                    <div className="
-                                        overflow-hidden
-                                        [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] ">
-                                        <div className="
-                                            flex gap-3
-                                            animate-infinite-scroll-skills ">
-                                            {carouselItems.map((item, idx) => {
-                                                const icon = techIcons[item];
-
-                                                return (
-                                                    <div key={`${skillCategory.category}-${item}-${idx}`} className=" flex-shrink-0 group/item">
-                                                        <div className=" relative flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-br from-slate-800/80 via-slate-800/70 to-slate-900/80
-                                                            border border-white/10
-                                                            shadow-[0_4px_16px_rgba(0,0,0,0.25)]
-                                                            hover:border-red-500/40
-                                                            hover:shadow-[0_4px_20px_rgba(220,38,38,0.2)]
-                                                            hover:scale-105
-                                                            transition-all duration-300
-                                                            cursor-default
-                                                            min-w-fit ">
-                                                            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity"></div>
-                                                            {icon ? (
-                                                                <div className="relative w-5 h-5 flex-shrink-0">
-                                                                    <img src={icon} alt={item} className="
-                                                                            w-full h-full 
-                                                                            object-contain
-                                                                            drop-shadow-[0_0_8px_rgba(255,255,255,0.1)]
-                                                                            opacity-80
-                                                                            group-hover/item:opacity-100
-                                                                            transition-opacity "/>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="w-5 h-5 rounded bg-red-500/20 flex items-center justify-center flex-shrink-0">
-                                                                    <Code size={12} className="text-red-400" />
-                                                                </div>
-                                                            )}
-
-                                                            <span className=" text-sm font-medium text-gray-300 group-hover/item:text-white transition-colors whitespace-nowrap ">
-                                                                {item}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
+                            <div className="flex flex-wrap gap-2">
+                                {skillCategory.items.map((item) => {
+                                    const icon = techIcons[item];
+                                    return (
+                                        <div
+                                            key={item}
+                                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/[0.08] text-xs text-gray-400"
+                                        >
+                                            {icon && (
+                                                <img
+                                                    src={icon}
+                                                    alt={item}
+                                                    className="w-3.5 h-3.5 object-contain opacity-75"
+                                                />
+                                            )}
+                                            <span>{item}</span>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent"></div>
-                            </Card>
-                        );
-                    })}
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         </section>

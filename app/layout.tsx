@@ -10,11 +10,9 @@ const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
 export const metadata: Metadata = {
     title: 'Cutberto Colohua | Portafolio Profesional',
     description: 'Ingeniero en Informática especializado en desarrollo web',
-    keywords: ['developer', 'portfolio', 'angular', 'react', 'nextjs', '3d'],
+    keywords: ['developer', 'portfolio', 'angular', 'react', 'nextjs'],
     authors: [{ name: 'Cutberto Castillo' }],
-    /* metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'), */
-    metadataBase: 'http://localhost:3000',
-
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
     openGraph: {
         type: 'website',
         locale: 'es_ES',
@@ -35,14 +33,11 @@ export default function RootLayout({
 }) {
     return (
         <html lang="es" className="dark">
-            <body className={`${inter.variable} ${outfit.variable} font-sans`}>
-                <div className="liquid-glass-container flex items-center justify-center">
-                    <div className="glass-main-container w-[98%] h-[95vh]">
-                        <MainLayout>
-                            {children}
-                        </MainLayout>
-                    </div>
-                </div>
+            <body className={`${inter.variable} ${outfit.variable} font-sans bg-black`}>
+                <MainLayout>
+                    {children}
+                </MainLayout>
+                <Analytics />
             </body>
         </html>
     )
