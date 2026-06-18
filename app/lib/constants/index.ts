@@ -61,28 +61,19 @@ export const EXPERIENCE_DATA = [
 
 export const SKILLS_DATA = [
     {
-        category: 'Lenguajes de Programación',
-        items: ['JavaScript', 'TypeScript', 'Python', 'HTML/CSS', 'SQL']
+        category: 'Frontend',
+        caption: 'Mi día a día: interfaces con React y Angular, cada vez más con Next.js.',
+        items: ['JavaScript', 'TypeScript', 'React', 'Angular', 'Next.js', 'Remix', 'Tailwind CSS', 'HTML/CSS']
     },
     {
-        category: 'Frameworks Frontend',
-        items: ['Next.js', 'React', 'Angular', 'Remix', 'Tailwind CSS']
+        category: 'Backend & Datos',
+        caption: 'Java del lado del servidor, y lo necesario para entender el resto del stack.',
+        items: ['Java', 'Node.js', 'REST APIs', 'GraphQL', 'SQL', 'PostgreSQL', 'Supabase', 'Prisma', 'Python', 'MongoDB', 'Google Cloud', 'Firebase']
     },
     {
-        category: 'Backend & APIs',
-        items: ['Node.js', 'REST APIs', 'GraphQL', 'JWT', 'Prisma']
-    },
-    {
-        category: 'Bases de Datos & Cloud',
-        items: ['Supabase', 'PostgreSQL', 'Vercel', 'MongoDB', 'Google Cloud', 'Firebase']
-    },
-    {
-        category: 'Herramientas de Desarrollo',
-        items: ['Git', 'Docker', 'VS Code', 'Postman', 'Swagger', 'Figma']
-    },
-    {
-        category: 'Análisis de Datos',
-        items: ['Python', 'Pandas', 'Geoespacial', 'ETL', 'Google Cloud']
+        category: 'Herramientas',
+        caption: 'Lo que uso para llevar el código de mi máquina a producción.',
+        items: ['Git', 'Docker', 'VS Code', 'Figma', 'Postman', 'Swagger', 'Vercel', 'JWT']
     },
 ];
 
@@ -102,8 +93,14 @@ export interface ProjectData {
     status?: ProjectStatus;
     github?: string;
     demo?: string;
+    /** Public-facing app/storefront demo — shown as its own "Ver Tienda" button when set. */
+    demoStore?: string;
+    /** Admin/dashboard demo — shown as its own "Ver Admin" button when set. */
+    demoAdmin?: string;
     company?: string;
     features?: string[];
+    /** Set true to keep a project in the data but hide it from the site (e.g. paused/under NDA review). */
+    hidden?: boolean;
 }
 
 export const PROJECTS_DATA: ProjectData[] = [
@@ -113,10 +110,17 @@ export const PROJECTS_DATA: ProjectData[] = [
         description: 'Plataforma de e-commerce y gestión para cafeterías. Sistema dual: panel admin completo + página pública para pedidos a domicilio con seguimiento en tiempo real.',
         role: 'Desarrollador Full Stack — AXCAP',
         technologies: ['Next.js 14', 'TypeScript', 'Supabase', 'Prisma', 'Tailwind CSS', 'Stripe', 'MercadoPago', 'Vercel'],
-        images: [],
+        images: [
+            '/projects/cafeteria/cafe.png',
+            '/projects/cafeteria/cafe1.png',
+            '/projects/cafeteria/cafe2.png',
+            '/projects/cafeteria/cafe3.png',
+            '/projects/cafeteria/cafe4.png',
+        ],
         type: 'open',
         category: 'saas',
         status: 'completado',
+        demoStore: 'https://admin-cafe-two.vercel.app/',
         features: [
             'Panel admin: gestión de productos, categorías, precios e inventario',
             'Gestión de promociones y descuentos con vigencia configurable',
@@ -130,6 +134,7 @@ export const PROJECTS_DATA: ProjectData[] = [
     {
         id: 2,
         title: 'Stock Central',
+        hidden: true,
         description: 'Sistema de administración de inventario y catálogo para distribuidoras de productos de belleza. Orientado a mayoristas con múltiples clientes y generación de documentos.',
         role: 'Desarrollador Full Stack — AXCAP',
         technologies: ['Next.js 14', 'TypeScript', 'Supabase', 'Prisma', 'Tailwind CSS', 'Vercel'],
@@ -153,10 +158,16 @@ export const PROJECTS_DATA: ProjectData[] = [
         description: 'Sistema de reservas y gestión para salones de belleza. Permite a los clientes agendar citas online y al negocio administrar agenda, servicios y métricas de ocupación.',
         role: 'Desarrollador Full Stack — AXCAP',
         technologies: ['Next.js 14', 'TypeScript', 'Supabase', 'Prisma', 'Tailwind CSS', 'Vercel'],
-        images: [],
+        images: [
+            '/projects/salon/salon.png',
+            '/projects/salon/salon1.png',
+            '/projects/salon/salon2.png',
+            '/projects/salon/salon3.png',
+        ],
         type: 'open',
         category: 'saas',
         status: 'completado',
+        demoStore: 'https://beauty-book-two.vercel.app/demo',
         features: [
             'Calendario de reservas con vista por estilista y por día/semana',
             'Catálogo de servicios con duración y precio configurable',
@@ -170,6 +181,7 @@ export const PROJECTS_DATA: ProjectData[] = [
     {
         id: 4,
         title: 'DentalCare Admin',
+        hidden: true,
         description: 'Sistema de gestión integral para clínicas dentales. Administración de pacientes, citas, tratamientos y expedientes clínicos digitales con odontograma interactivo.',
         role: 'Desarrollador Full Stack — AXCAP',
         technologies: ['Next.js 14', 'TypeScript', 'Supabase', 'Prisma', 'Tailwind CSS', 'Vercel'],
@@ -190,6 +202,7 @@ export const PROJECTS_DATA: ProjectData[] = [
     {
         id: 5,
         title: 'FloralOS',
+        hidden: true,
         description: 'Sistema de gestión para florerías. Administración de pedidos, inventario floral, rutas de entrega y clientes para negocios de flores y arreglos florales.',
         role: 'Desarrollador Full Stack — AXCAP',
         technologies: ['Next.js 14', 'TypeScript', 'Supabase', 'Prisma', 'Tailwind CSS', 'Vercel'],
@@ -213,7 +226,15 @@ export const PROJECTS_DATA: ProjectData[] = [
         description: 'Colección de landing pages de alto rendimiento desarrolladas para clientes de AXCAP en diferentes industrias con Lighthouse 95+ y carga <1.5s en mobile.',
         role: 'Desarrollador Full Stack — AXCAP',
         technologies: ['Next.js 14', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Vercel', 'SEO'],
-        images: [],
+        images: [
+            '/projects/landings/cap1.png',
+            '/projects/landings/cap2.png',
+            '/projects/landings/cap3.png',
+            '/projects/landings/cap4.png',
+            '/projects/landings/cap5.png',
+            '/projects/landings/cap6.png',
+            '/projects/landings/cap7.png',
+        ],
         type: 'open',
         category: 'landing',
         status: 'completado',

@@ -3,9 +3,28 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const MAX_LENGTHS = { name: 100, email: 150, subject: 150, message: 5000 };
+
+function escapeHtml(value: string) {
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 export async function POST(req: NextRequest) {
     try {
-        const { name, email, subject, message } = await req.json();
+        const body = await req.json();
+        const { name, email, subject, message, website } = body;
+
+        // Honeypot: real users never fill this hidden field. Silently
+        // pretend success so bots don't learn to avoid it.
+        if (typeof website === 'string' && website.trim().length > 0) {
+            return NextResponse.json({ message: 'Email enviado correctamente' }, { status: 200 });
+        }
 
         if (!name || !email || !subject || !message) {
             return NextResponse.json(
@@ -14,12 +33,35 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        if (
+            typeof name !== 'string' || typeof email !== 'string' ||
+            typeof subject !== 'string' || typeof message !== 'string'
+        ) {
+            return NextResponse.json({ error: 'Formato de datos inválido' }, { status: 400 });
+        }
+
+        if (!EMAIL_REGEX.test(email)) {
+            return NextResponse.json({ error: 'Email inválido' }, { status: 400 });
+        }
+
+        if (
+            name.length > MAX_LENGTHS.name || email.length > MAX_LENGTHS.email ||
+            subject.length > MAX_LENGTHS.subject || message.length > MAX_LENGTHS.message
+        ) {
+            return NextResponse.json({ error: 'Uno de los campos excede la longitud permitida' }, { status: 400 });
+        }
+
+        const safeName = escapeHtml(name);
+        const safeEmail = escapeHtml(email);
+        const safeSubject = escapeHtml(subject);
+        const safeMessage = escapeHtml(message);
+
         const data = await resend.emails.send({
             from: 'Portafolio <onboarding@resend.dev>',
             to: ['castillocutberto10@gmail.com'],
             replyTo: email,
-            subject: `Nuevo mensaje de portafolio: ${subject}`,
-            html: 
+            subject: `Nuevo mensaje de portafolio: ${safeSubject}`,
+            html:
             `<!DOCTYPE html>
             <html>
                 <head>
@@ -42,19 +84,19 @@ export async function POST(req: NextRequest) {
                     <div class="content">
                         <div class="field">
                         <div class="label">Nombre:</div>
-                        <div class="value">${name}</div>
+                        <div class="value">${safeName}</div>
                     </div>
                     <div class="field">
                         <div class="label">Email:</div>
-                        <div class="value">${email}</div>
+                        <div class="value">${safeEmail}</div>
                     </div>
                     <div class="field">
                         <div class="label">Asunto:</div>
-                        <div class="value">${subject}</div>
+                        <div class="value">${safeSubject}</div>
                     </div>
                     <div class="field">
                         <div class="label">Mensaje:</div>
-                        <div class="value">${message.replace(/\n/g, '<br>')}</div>
+                        <div class="value">${safeMessage.replace(/\n/g, '<br>')}</div>
                     </div>
                     <div class="footer">
                         <p>Este mensaje fue enviado desde tu portafolio web</p>

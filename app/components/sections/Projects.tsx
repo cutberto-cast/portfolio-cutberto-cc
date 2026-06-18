@@ -1,19 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Github, Lock, ExternalLink, Shield, CheckCircle2, Clock, ChevronDown, ChevronUp } from 'lucide-react';
-import { GradientText } from '../ui/GradientTexts';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight, Github, Lock, ExternalLink, Shield, CheckCircle2, Clock, ChevronDown, ChevronUp, Store, LayoutDashboard } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PROJECTS_DATA, type ProjectData, type ProjectType, type ProjectStatus, type ProjectCategory } from '@/app/lib/constants';
-
-type FilterOption = 'todos' | ProjectCategory;
-
-const FILTER_LABELS: Record<FilterOption, string> = {
-    todos: 'Todos',
-    saas: 'SaaS',
-    landing: 'Landing Page',
-    webapp: 'Web App',
-};
+import { PROJECTS_DATA, type ProjectData, type ProjectType, type ProjectStatus } from '@/app/lib/constants';
+import { Reveal, StaggerGroup, StaggerItem } from '../ui/Reveal';
 
 const StatusBadge = ({ status }: { status?: ProjectStatus }) => {
     if (!status) return null;
@@ -45,9 +36,19 @@ const ProjectTypeBadge = ({ type }: { type: ProjectType }) => {
     );
 };
 
-const ImageGallery = ({ images, title }: { images: string[]; title: string }) => {
+interface ImageGalleryProps {
+    images: string[];
+    title: string;
+    /** ms between automatic slides. */
+    autoPlayInterval?: number;
+    /** Pause the automatic advance while the pointer hovers the gallery. */
+    pauseOnHover?: boolean;
+}
+
+const ImageGallery = ({ images, title, autoPlayInterval = 2800, pauseOnHover = true }: ImageGalleryProps) => {
     const [current, setCurrent] = useState(0);
     const [direction, setDirection] = useState(0);
+    const [isHovering, setIsHovering] = useState(false);
 
     const slideVariants = {
         enter: (dir: number) => ({ x: dir > 0 ? 300 : -300, opacity: 0 }),
@@ -55,15 +56,28 @@ const ImageGallery = ({ images, title }: { images: string[]; title: string }) =>
         exit: (dir: number) => ({ zIndex: 0, x: dir < 0 ? 300 : -300, opacity: 0 }),
     };
 
-    const paginate = (newDir: number) => {
+    const paginate = useCallback((newDir: number) => {
         setDirection(newDir);
         setCurrent((prev) =>
             newDir === 1 ? (prev + 1) % images.length : (prev - 1 + images.length) % images.length
         );
-    };
+    }, [images.length]);
+
+    // Automatic, continuous advance — smooth crossfade/slide handled by AnimatePresence below.
+    useEffect(() => {
+        if (images.length < 2) return;
+        if (pauseOnHover && isHovering) return;
+
+        const id = setInterval(() => paginate(1), autoPlayInterval);
+        return () => clearInterval(id);
+    }, [images.length, pauseOnHover, isHovering, autoPlayInterval, paginate]);
 
     return (
-        <div className="relative w-full aspect-video bg-slate-900/50 rounded-lg overflow-hidden isolate group">
+        <div
+            className="relative w-full aspect-video bg-slate-900/50 rounded-lg overflow-hidden isolate group"
+            onMouseEnter={() => pauseOnHover && setIsHovering(true)}
+            onMouseLeave={() => pauseOnHover && setIsHovering(false)}
+        >
             {images.length > 0 ? (
                 <>
                     <AnimatePresence initial={false} custom={direction}>
@@ -83,15 +97,25 @@ const ImageGallery = ({ images, title }: { images: string[]; title: string }) =>
                     {images.length > 1 && (
                         <>
                             <button onClick={() => paginate(-1)}
-                                className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                className="press-feedback absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                 <ChevronLeft size={20} />
                             </button>
                             <button onClick={() => paginate(1)}
-                                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                className="press-feedback absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 flex items-center justify-center text-white z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                                 <ChevronRight size={20} />
                             </button>
                             <div className="absolute bottom-2 right-2 px-3 py-1 rounded-lg bg-black/60 text-xs text-white z-10">
                                 {current + 1} / {images.length}
+                            </div>
+                            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                                {images.map((_, idx) => (
+                                    <div
+                                        key={idx}
+                                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                                            idx === current ? 'bg-red-500 w-6' : 'bg-white/40 w-1.5'
+                                        }`}
+                                    />
+                                ))}
                             </div>
                         </>
                     )}
@@ -112,17 +136,10 @@ const ProjectCard = ({ project }: { project: ProjectData }) => {
     const [showFeatures, setShowFeatures] = useState(false);
 
     return (
-        <div className="rounded-2xl overflow-hidden border border-white/5 bg-slate-900/30">
+        <div className="rounded-2xl overflow-hidden border border-white/5 bg-slate-900/30 transition-colors duration-300 hover:border-white/10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 md:p-8">
                 <div>
                     <ImageGallery images={project.images} title={project.title} />
-                    {project.images.length > 1 && (
-                        <div className="flex justify-center gap-2 mt-4">
-                            {project.images.map((_, idx) => (
-                                <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === 0 ? 'bg-red-500/50 w-6' : 'bg-gray-700 w-1.5'}`} />
-                            ))}
-                        </div>
-                    )}
                 </div>
 
                 <div className="flex flex-col h-full">
@@ -200,18 +217,32 @@ const ProjectCard = ({ project }: { project: ProjectData }) => {
                         </div>
                     </div>
 
-                    {(project.github || project.demo) && (
+                    {(project.github || project.demo || project.demoStore || project.demoAdmin) && (
                         <div className="flex flex-wrap gap-4 mt-auto pt-6 border-t border-white/5">
                             {project.github && (
                                 <a href={project.github} target="_blank" rel="noopener noreferrer"
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 text-white text-sm font-medium">
+                                    className="press-feedback flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 text-white text-sm font-medium transition-colors duration-200 hover:bg-slate-700">
                                     <Github size={18} />
                                     <span>Código Fuente</span>
                                 </a>
                             )}
-                            {project.demo && (
+                            {project.demoStore && (
+                                <a href={project.demoStore} target="_blank" rel="noopener noreferrer"
+                                    className="press-feedback flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 text-white text-sm font-medium transition-opacity duration-200 hover:opacity-90">
+                                    <Store size={18} />
+                                    <span>Ver Tienda</span>
+                                </a>
+                            )}
+                            {project.demoAdmin && (
+                                <a href={project.demoAdmin} target="_blank" rel="noopener noreferrer"
+                                    className="press-feedback flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 border border-white/10 text-white text-sm font-medium transition-colors duration-200 hover:bg-slate-700">
+                                    <LayoutDashboard size={18} />
+                                    <span>Ver Admin</span>
+                                </a>
+                            )}
+                            {project.demo && !project.demoStore && !project.demoAdmin && (
                                 <a href={project.demo} target="_blank" rel="noopener noreferrer"
-                                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 text-white text-sm font-medium">
+                                    className="press-feedback flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-orange-600 text-white text-sm font-medium transition-opacity duration-200 hover:opacity-90">
                                     <ExternalLink size={18} />
                                     <span>Ver Demo</span>
                                 </a>
@@ -224,62 +255,149 @@ const ProjectCard = ({ project }: { project: ProjectData }) => {
     );
 };
 
+/**
+ * 3D coverflow — the active screenshot sits centered and frontal, the rest recede in
+ * depth to either side (smaller, dimmer, tilted away). Same "depth" language as the
+ * Skills marquee's premium feel, but a linear coverflow instead of a flat scroll.
+ * Always advances, never pauses on hover (per design — this is a passive showcase).
+ */
+const LandingCoverflow = ({ images, title }: { images: string[]; title: string }) => {
+    const [current, setCurrent] = useState(0);
+
+    useEffect(() => {
+        if (images.length < 2) return;
+        const id = setInterval(() => {
+            setCurrent((prev) => (prev + 1) % images.length);
+        }, 3200);
+        return () => clearInterval(id);
+    }, [images.length]);
+
+    const shortestOffset = (idx: number) => {
+        const len = images.length;
+        let diff = idx - current;
+        if (diff > len / 2) diff -= len;
+        if (diff < -len / 2) diff += len;
+        return diff;
+    };
+
+    return (
+        <div className="relative">
+            <div
+                className="relative h-[200px] sm:h-[280px] md:h-[360px] overflow-hidden [perspective:1400px]"
+                style={{
+                    maskImage: 'linear-gradient(90deg, transparent, black 16%, black 84%, transparent)',
+                    WebkitMaskImage: 'linear-gradient(90deg, transparent, black 16%, black 84%, transparent)',
+                }}
+            >
+                {images.map((img, idx) => {
+                    const offset = shortestOffset(idx);
+                    if (Math.abs(offset) > 2) return null;
+
+                    const isActive = offset === 0;
+                    const scale = isActive ? 1 : Math.abs(offset) === 1 ? 0.78 : 0.6;
+                    const opacity = isActive ? 1 : Math.abs(offset) === 1 ? 0.55 : 0.25;
+
+                    return (
+                        <button
+                            key={img}
+                            onClick={() => setCurrent(idx)}
+                            aria-label={`Ver captura ${idx + 1} de ${title}`}
+                            tabIndex={isActive ? -1 : 0}
+                            className="absolute left-1/2 top-1/2 w-[68%] sm:w-[52%] md:w-[42%] aspect-video rounded-xl overflow-hidden border border-white/10 shadow-2xl shadow-black/60 transition-[transform,opacity] duration-700 ease-[var(--ease-out-premium)]"
+                            style={{
+                                transform: `translate(-50%, -50%) translateX(${offset * 62}%) rotateY(${offset * -28}deg) scale(${scale})`,
+                                opacity,
+                                zIndex: 10 - Math.abs(offset),
+                                pointerEvents: isActive ? 'none' : 'auto',
+                            }}
+                        >
+                            <img
+                                src={img}
+                                alt={`${title} - captura ${idx + 1}`}
+                                className="w-full h-full object-cover"
+                            />
+                            {!isActive && <div className="absolute inset-0 bg-black/35" />}
+                        </button>
+                    );
+                })}
+            </div>
+
+            <div className="flex justify-center gap-2 mt-6">
+                {images.map((_, idx) => (
+                    <button
+                        key={idx}
+                        onClick={() => setCurrent(idx)}
+                        aria-label={`Ir a captura ${idx + 1}`}
+                        className={`press-feedback h-1.5 rounded-full transition-all duration-300 ${
+                            idx === current ? 'bg-red-500 w-6' : 'bg-white/20 w-1.5 hover:bg-white/40'
+                        }`}
+                    />
+                ))}
+            </div>
+        </div>
+    );
+};
+
+/** Landing pages don't carry much technical detail individually — show them as one
+ * big, always-moving showcase at the end of the section instead of a regular card. */
+const LandingShowcase = ({ project }: { project: ProjectData }) => (
+    <Reveal>
+        <div className="text-center max-w-2xl mx-auto mb-10">
+            <h3 className="font-outfit text-2xl md:text-3xl font-bold text-white tracking-tight mb-3">
+                {project.title}
+            </h3>
+            <p className="text-gray-400 leading-relaxed">{project.description}</p>
+            {project.technologies.length > 0 && (
+                <div className="flex flex-wrap gap-2 justify-center mt-4">
+                    {project.technologies.map((tech, idx) => (
+                        <span
+                            key={idx}
+                            className="px-3 py-1.5 rounded-lg bg-slate-800/50 border border-white/5 text-xs text-gray-300 cursor-default"
+                        >
+                            {tech}
+                        </span>
+                    ))}
+                </div>
+            )}
+        </div>
+
+        <LandingCoverflow images={project.images} title={project.title} />
+    </Reveal>
+);
+
+const VISIBLE_PROJECTS = PROJECTS_DATA.filter((p) => !p.hidden);
+const LANDING_PROJECT = VISIBLE_PROJECTS.find((p) => p.title === 'Landing Pages — AXCAP');
+const GRID_PROJECTS = VISIBLE_PROJECTS.filter((p) => p !== LANDING_PROJECT);
+
 export const Projects: React.FC = () => {
-    const [activeFilter, setActiveFilter] = useState<FilterOption>('todos');
-    const filters: FilterOption[] = ['todos', 'saas', 'landing', 'webapp'];
-
-    const filtered = activeFilter === 'todos'
-        ? PROJECTS_DATA
-        : PROJECTS_DATA.filter((p) => p.category === activeFilter);
-
     return (
         <section id="projects" className="min-h-screen flex items-center py-20">
             <div className="max-w-7xl w-full mx-auto px-4 md:px-8">
 
-                <div className="text-center mb-10">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-                        <GradientText>Proyectos</GradientText> Destacados
+                <Reveal className="text-center mb-10">
+                    <h2 className="font-outfit text-4xl md:text-5xl font-bold text-white tracking-tight mb-4">
+                        Proyectos Destacados
                     </h2>
                     <p className="text-gray-400 text-lg max-w-3xl mx-auto">
                         Productos SaaS y aplicaciones desarrolladas como fundador de AXCAP y en colaboraciones profesionales.
                     </p>
-                </div>
+                </Reveal>
 
-                <div className="flex flex-wrap gap-2 justify-center mb-10">
-                    {filters.map((filter) => (
-                        <button
-                            key={filter}
-                            onClick={() => setActiveFilter(filter)}
-                            className={`px-5 py-2 rounded-full text-sm font-medium border ${
-                                activeFilter === filter
-                                    ? 'bg-red-600/80 border-red-500/50 text-white'
-                                    : 'bg-slate-800/50 border-white/10 text-gray-400'
-                            }`}
-                        >
-                            {FILTER_LABELS[filter]}
-                            {filter !== 'todos' && (
-                                <span className="ml-2 text-xs opacity-70">
-                                    {PROJECTS_DATA.filter((p) => p.category === filter).length}
-                                </span>
-                            )}
-                        </button>
-                    ))}
-                </div>
-
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={activeFilter}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="space-y-12"
-                    >
-                        {filtered.map((project) => (
-                            <ProjectCard key={project.id} project={project} />
+                {GRID_PROJECTS.length > 0 && (
+                    <StaggerGroup className="space-y-12" staggerDelay={0.1}>
+                        {GRID_PROJECTS.map((project) => (
+                            <StaggerItem key={project.id} y={24}>
+                                <ProjectCard project={project} />
+                            </StaggerItem>
                         ))}
-                    </motion.div>
-                </AnimatePresence>
+                    </StaggerGroup>
+                )}
+
+                {LANDING_PROJECT && (
+                    <div className={GRID_PROJECTS.length > 0 ? 'mt-16' : ''}>
+                        <LandingShowcase project={LANDING_PROJECT} />
+                    </div>
+                )}
             </div>
         </section>
     );

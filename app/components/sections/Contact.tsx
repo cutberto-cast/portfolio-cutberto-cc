@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import { Send, Mail, Phone, Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Card } from '../ui/Card';
 import Input from '../ui/Input';
 import { Button } from '../ui/Button';
+import { Reveal } from '../ui/Reveal';
 import toast, { Toaster } from 'react-hot-toast';
 
 export const Contact = () => {
@@ -14,6 +16,7 @@ export const Contact = () => {
         email: '',
         subject: '',
         message: '',
+        website: '', // honeypot — left empty by real users, caught server-side
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -48,6 +51,7 @@ export const Contact = () => {
                     email: '',
                     subject: '',
                     message: '',
+                    website: '',
                 });
             } else {
                 toast.error(data.error || 'Error al enviar el mensaje', {
@@ -59,7 +63,7 @@ export const Contact = () => {
                     },
                 });
             }
-        } catch (error) {
+        } catch {
             toast.error('Error de conexión. Verifica tu internet.', {
                 duration: 4000,
                 position: 'top-center',
@@ -86,16 +90,27 @@ export const Contact = () => {
             <section id="contact" className="min-h-[70vh] flex items-center px-4 md:px-8">
 
                 <div className="max-w-6xl w-full mx-auto">
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-3 inline-block">
+                    <Reveal className="text-center mb-8">
+                        <h2 className="font-outfit text-3xl md:text-4xl font-bold text-white tracking-tight inline-block">
                             Contacto
                         </h2>
-                    </div>
+                    </Reveal>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-center">
 
-                        <Card className="p-5 md:p-6 border-white/10">
+                        <Reveal delay={0.05}>
+                        <Card hoverLift className="p-5 md:p-6 border-white/10">
                             <form onSubmit={handleSubmit} className="space-y-5">
+                                <input
+                                    type="text"
+                                    name="website"
+                                    value={formData.website}
+                                    onChange={handleChange}
+                                    className="hidden"
+                                    tabIndex={-1}
+                                    autoComplete="off"
+                                    aria-hidden="true"
+                                />
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <Input label="Nombre" name="name" value={formData.name} onChange={handleChange} required disabled={isSubmitting} />
                                     <Input label="Email" type="email" name="email" value={formData.email} onChange={handleChange} required disabled={isSubmitting} />
@@ -130,6 +145,13 @@ export const Contact = () => {
                                         </>
                                     )}
                                 </Button>
+
+                                <p className="text-center text-xs text-slate-500">
+                                    Al enviar este formulario aceptas el{' '}
+                                    <Link href="/privacidad" className="text-red-400 hover:underline">
+                                        Aviso de Privacidad
+                                    </Link>.
+                                </p>
                             </form>
 
                             <div className="mt-6 pt-6 border-t border-white/10">
@@ -145,8 +167,9 @@ export const Contact = () => {
                                 </div>
                             </div>
                         </Card>
+                        </Reveal>
 
-                        <div className="relative h-[400px] md:h-[450px] lg:h-[500px] rounded-2xl overflow-hidden">
+                        <Reveal delay={0.1} className="relative h-[400px] md:h-[450px] lg:h-[500px] rounded-2xl overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-br from-slate-900/30 via-transparent to-slate-800/30"></div>
 
                             <div className="relative w-full h-full flex items-center justify-center">
@@ -172,7 +195,7 @@ export const Contact = () => {
                                     READY FOR NEW CHALLENGES
                                 </p>
                             </div>
-                        </div>
+                        </Reveal>
                     </div>
                 </div>
             </section>

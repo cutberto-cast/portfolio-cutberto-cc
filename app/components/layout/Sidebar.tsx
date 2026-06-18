@@ -92,7 +92,7 @@ export default function Sidebar() {
                                 <button
                                     onClick={() => scrollToSection(item.href)}
                                     className={cn(
-                                        "w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 relative z-10",
+                                        "press-feedback w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ease-out relative z-10",
                                         isActive
                                             ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)] scale-110"
                                             : "text-slate-400 hover:text-white hover:bg-white/10"
@@ -115,7 +115,7 @@ export default function Sidebar() {
                             <button
                                 key={item.name}
                                 onClick={() => scrollToSection(item.href)}
-                                className="relative flex flex-col items-center z-10"
+                                className="press-feedback relative flex flex-col items-center z-10"
                             >
                                 <item.icon
                                     size={24}

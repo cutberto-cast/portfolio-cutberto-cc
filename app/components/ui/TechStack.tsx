@@ -41,8 +41,30 @@ const TechStackVertical: React.FC = () => {
 
     const [mousePos, setMousePos] = useState({ x: -1000, y: -1000 });
     const [isHovering, setIsHovering] = useState(false);
+    // Per-item highlight intensity (0-1), recomputed from refs inside the mousemove
+    // handler — never read from refs during render (React refs/render rule).
+    const [intensities, setIntensities] = useState<number[]>([]);
 
     const RADIUS = 200;
+
+    const recomputeIntensities = useCallback((x: number, y: number) => {
+        const containerRect = containerRef.current?.getBoundingClientRect();
+        if (!containerRect) return;
+
+        const next = itemsRef.current.map((item) => {
+            if (!item) return 0;
+            const rect = item.getBoundingClientRect();
+            const itemCenterX = (rect.left - containerRect.left) + (rect.width / 2);
+            const itemCenterY = (rect.top - containerRect.top) + (rect.height / 2);
+            const distance = Math.sqrt(
+                Math.pow(x - itemCenterX, 2) +
+                Math.pow(y - itemCenterY, 2)
+            );
+            return 1 - Math.min(distance, RADIUS) / RADIUS;
+        });
+
+        setIntensities(next);
+    }, []);
 
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
         if (!containerRef.current) return;
@@ -53,13 +75,13 @@ const TechStackVertical: React.FC = () => {
         if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
         rafRef.current = requestAnimationFrame(() => {
             setMousePos({ x, y });
+            recomputeIntensities(x, y);
             rafRef.current = null;
         });
-    }, []);
+    }, [recomputeIntensities]);
 
     const getIconStyle = (index: number) => {
-        const item = itemsRef.current[index];
-        if (!item || !isHovering) {
+        if (!isHovering) {
             return {
                 opacity: 0.2,
                 filter: "grayscale(100%)",
@@ -70,18 +92,7 @@ const TechStackVertical: React.FC = () => {
             };
         }
 
-        const rect = item.getBoundingClientRect();
-        const containerRect = containerRef.current?.getBoundingClientRect() || { left: 0, top: 0 };
-
-        const itemCenterX = (rect.left - containerRect.left) + (rect.width / 2);
-        const itemCenterY = (rect.top - containerRect.top) + (rect.height / 2);
-
-        const distance = Math.sqrt(
-            Math.pow(mousePos.x - itemCenterX, 2) +
-            Math.pow(mousePos.y - itemCenterY, 2)
-        );
-
-        let intensity = 1 - Math.min(distance, RADIUS) / RADIUS;
+        const intensity = intensities[index] ?? 0;
 
         const opacity = 0.2 + (intensity * 0.8);
         const grayscale = 1 - intensity;
