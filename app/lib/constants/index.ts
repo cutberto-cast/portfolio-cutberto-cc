@@ -120,7 +120,8 @@ export const PROJECTS_DATA: ProjectData[] = [
         type: 'open',
         category: 'saas',
         status: 'completado',
-        demoStore: 'https://admin-cafe-two.vercel.app/',
+        demoStore: 'https://www.cafecito.shop/',
+        demoAdmin: 'https://admin-cafe-two.vercel.app/',
         features: [
             'Panel admin: gestión de productos, categorías, precios e inventario',
             'Gestión de promociones y descuentos con vigencia configurable',
